@@ -1,0 +1,128 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Jacques Francois;
+    color:white;
+}
+
+.Main {
+    background-color: #000000;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100vh;
+}
+
+.Heading {
+    background-color: #2E2E2E;
+    padding: 20px 40px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.TOGETHER-name-logo {
+    display: flex;
+    align-items: center;
+}
+
+.Logo img {
+    width: 50px;
+    height: auto;
+}
+
+.web-name h1 {
+    font-size: 25px;
+    margin-left: 10px;
+}
+
+.Login-button button {
+    background-color: #db1818;
+    border: none;
+    padding: 7px 20px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.Login-button button:hover {
+    background-color: #dd5757;
+}
+
+.Body {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding: 50px;
+    flex: 1;
+}
+
+.leftSide h1 {
+    font-size: 40px;
+    line-height: 1.5;
+}
+
+.leftSide p {
+    font-size: 20px;
+    margin: 20px 0;
+}
+
+.Signup-button button {
+    background-color: #db1818;
+    border: none;
+    padding: 10px 25px;
+    border-radius: 25px;
+    cursor: pointer;
+    font-size: 18px;
+}
+
+.Signup-button button:hover {
+    background-color:  #dd5757;
+}
+
+.rightSideImage img {
+    width: 500px;
+    height: auto;
+}
+
+.Footer {
+    background-color: #2E2E2E;
+}
+
+.social {
+    margin-bottom: 8px;
+    margin-top: 10px;
+}
+
+.social p {
+    font-size: 19px;
+    margin-bottom: 10px;
+}
+
+.social a {
+    margin: 0 10px;
+}
+
+.social a img {
+    width: 30px;
+    height: auto;
+}
+.AHAHA{
+    margin-bottom: 5px;
+}
+.AHAHA a {
+    margin: 0 5px;
+    font-size: 15px;
+}
+
+.AHAHA a:hover {
+    text-decoration: underline;
+}
+
+.Copyright {
+    margin:10 0px;
+    font-size: 15px;
+    background-color: #db1818;
+}
