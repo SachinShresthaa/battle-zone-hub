@@ -3,7 +3,7 @@
     padding: 0;
     box-sizing: border-box;
     font-family: Jacques Francois;
-    color:white;
+    color: white;
 }
 
 .Main {
@@ -14,10 +14,10 @@
     justify-content: space-between;
     height: 100vh;
 }
-
+ 
 .Heading {
     background-color: #2E2E2E;
-    padding: 20px 40px;
+    padding: 30px 60px;
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -29,22 +29,22 @@
 }
 
 .Logo img {
-    width: 50px;
+    width: 75px;
     height: auto;
 }
 
 .web-name h1 {
-    font-size: 25px;
-    margin-left: 10px;
+    font-size: 36px;
+    margin-left: 15px;
 }
 
 .Login-button button {
     background-color: #db1818;
     border: none;
-    padding: 7px 20px;
-    border-radius: 25px;
+    padding: 10px 36px;
+    border-radius: 36px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 28px;
 }
 
 .Login-button button:hover {
@@ -55,74 +55,34 @@
     display: flex;
     justify-content: space-around;
     align-items: center;
-    padding: 50px;
+    padding: 70px;
     flex: 1;
 }
 
 .leftSide h1 {
-    font-size: 40px;
+    font-size: 60px;
     line-height: 1.5;
 }
 
 .leftSide p {
-    font-size: 20px;
-    margin: 20px 0;
+    font-size: 30px;
+    margin: 30px 0;
 }
 
 .Signup-button button {
     background-color: #db1818;
     border: none;
-    padding: 10px 25px;
-    border-radius: 25px;
+    padding: 15px 36px;
+    border-radius: 36px;
     cursor: pointer;
-    font-size: 18px;
+    font-size: 28px;
 }
 
 .Signup-button button:hover {
-    background-color:  #dd5757;
+    background-color: #dd5757;
 }
 
 .rightSideImage img {
-    width: 500px;
+    width: 750px;
     height: auto;
-}
-
-.Footer {
-    background-color: #2E2E2E;
-}
-
-.social {
-    margin-bottom: 8px;
-    margin-top: 10px;
-}
-
-.social p {
-    font-size: 19px;
-    margin-bottom: 10px;
-}
-
-.social a {
-    margin: 0 10px;
-}
-
-.social a img {
-    width: 30px;
-    height: auto;
-}
-.AHAHA{
-    margin-bottom: 5px;
-}
-.AHAHA a {
-    margin: 0 5px;
-    font-size: 15px;
-}
-
-.AHAHA a:hover {
-    text-decoration: underline;
-}
-
-.Copyright {
-    margin:10 0px;
-    font-size: 15px;
-    background-color: #db1818;
 }

@@ -5,165 +5,90 @@
   font-family: Jacques Francois;
   color:white;
 }
-
 .Main {
   background-color: #000000;
   text-align: center;
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  height: 100vh;
-}
-
-.Heading {
-  background-color: #2E2E2E;
-  padding: 20px 40px;
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-
-.TOGETHER-name-logo {
-  display: flex;
-  align-items: center;
-}
-
-.Logo img {
-  width: 50px;
-  height: auto;
-}
-
-.web-name h1 {
-  font-size: 25px;
-  margin-left: 10px;
+  height: 100%;
 }
 .Body {
   justify-content: space-around;
   align-items: center;
   padding: 50px;
   flex: 1;
-  
   display: flex;
 }
-
 .leftSide {
-  padding-left: 20px;
+  padding-left: 30px;
   background-color: black;
 }
-
 .login-details h2 {
-  margin-left: 80px;
-  font-size: 25px;
-  margin-bottom: 20px;
+  padding-top: 22px;
+  margin-left: 130px;
+  font-size: 36px;
+  margin-bottom: 30px;
 }
-
 form {
-  width: 125%;
+  width: 135%;
   display: flex;
   flex-direction: column;
 }
-
 form label {
   text-align: left;
-  font-size: 20px;
+  font-size: 30px;
   color: white;
-  padding: 5px;
-  margin-top: 5px;
-  margin-bottom: -8px;
+  padding: 7px;
+  margin-top: 7px;
+  margin-bottom: -12px;
 }
-
 form input {
-  width: 110%;
+  width: 100%;
   background-color: #2E2E2E;
   color: white;
   border: 1px solid #444444;
-  border-radius: 10px;
-  padding: 12px;
-  margin-top: 5px;
-  font-size: 15px;
+  border-radius: 15px;
+  padding: 18px;
+  margin-top: 7px;
+  font-size: 22px;
 }
 button{
-  margin-left: 118px;
+  margin-left: 177px;
   background-color: #db1818;
-  width: 100px;
+  width: 150px;
   color: white;
-  border-radius: 25px;
-  padding: 8px;
-  font-size: 18px;  
-  margin-top: 20px;
+  border-radius: 36px;
+  padding: 12px;
+  font-size: 25px;  
+  margin-top: 30px;
   cursor: pointer;
   border: none;
 }
-
 form .login-button:hover {
   background-color: #dd5757;
 }
-
 .signup-link {
-  margin-top: 20px;
-  margin-left: 70px;
-  font-size: 15px;
-  color: #CCCCCC;
+  margin-top: 30px;
+  margin-left: 105px;
+  font-size: 22px;
+  color: white;
+  padding-bottom: 22px;
 }
-
 .signup-link a {
   text-decoration: underline;
 }
-
 .signup-link a:hover {
   color: #db1818;
 }
-
 .rightSideImage { 
   display: flex;
   justify-content: center;
   align-items: center;
 }
-
 .rightSideImage img {
   width: 100%;
-  max-width: 500px;
+  max-width: 750px;
   height: auto;
-  border-radius: 10px;
-}
-
-
-.Footer {
-  background-color: #2E2E2E;
-}
-
-.social {
-  margin-bottom: 8px;
-  margin-top: 10px;
-}
-
-.social p {
-  font-size: 19px;
-  margin-bottom: 10px;
-}
-
-.social a {
-  margin: 0 10px;
-}
-
-.social a img {
-  width: 30px;
-  height: auto;
-}
-.AHAHA{
-  margin-bottom: 5px;
-}
-.AHAHA a {
-  margin: 0 5px;
-  font-size: 15px;
-}
-
-.AHAHA a:hover {
-  text-decoration: underline;
-}
-
-.Copyright {
-  margin:10 0px;
-  font-size: 15px;
-  background-color: #db1818;
+  border-radius: 15px;
 }

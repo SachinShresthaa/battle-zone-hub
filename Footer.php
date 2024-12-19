@@ -10,7 +10,7 @@
         }
 
         .social {
-            margin-bottom: 12px;
+            margin-bottom: 12px;    
             padding-top: 15px;
         }
 
@@ -35,6 +35,7 @@
         .AHAHA a {
             margin: 0 8px;
             font-size: 22px; 
+            color: white;
         }
 
         .AHAHA a:hover {
@@ -59,7 +60,7 @@
             </a>
         </div>
         <div class="AHAHA">
-            <a href="">About</a> |
+            <a href="">About us</a> |
             <a href="">Terms & Conditions</a> |
             <a href="">Privacy Policy</a>
         </div>

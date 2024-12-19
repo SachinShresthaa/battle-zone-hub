@@ -1,0 +1,35 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Jacques Francois;
+    color: white;
+}
+
+.Main {
+    background-color: #000000;
+    text-align: center;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    height: 100%;
+}
+
+.Body {
+    display: flex;
+    justify-content: space-around;
+    align-items: center;
+    padding:  0 px;
+    flex: 1;
+}
+
+.leftSide{
+    width: 700px;
+    height: 300px;
+}
+
+.rightSideImage{
+    background-color: green;
+    width: 1000px;
+    height: 300px;
+}
