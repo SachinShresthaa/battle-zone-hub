@@ -16,7 +16,7 @@
                 <div class="login-details">
                     <h2>Hey<br>Welcome Back!</h2>
     
-                    <form method="POST" action="">
+                    <form method="POST" action="home.php">
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" placeholder="Enter your email" required>
                         
