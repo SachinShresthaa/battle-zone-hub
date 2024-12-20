@@ -18,7 +18,7 @@
                 </div>
             </div>
             <div class="Login-button">
-                <a href="login.html">
+                <a href="login.php">
                     <button type="button">Login</button>
                 </a>
             </div>
@@ -28,7 +28,7 @@
                 <h1>Play<br>Esports tournaments<br>& win rewards</h1>
                 <p>Your first step to becoming a gamer!</p>
                 <div class="Signup-button">
-                    <a href="signup.html">
+                    <a href="signup.php">
                         <button>Sign up for Free</button>
                     </a>
                 </div>
