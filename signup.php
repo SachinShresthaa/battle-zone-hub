@@ -17,7 +17,7 @@
                 <div class="signup-details">
                     <h2>Create Account</h2>
                     
-                    <form method="POST" action="">
+                    <form method="POST" action="home.php">
                         <label for="username">Username</label>
                         <input type="text" id="username" name="username" placeholder="Enter your username" required>
                         
