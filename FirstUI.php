@@ -4,14 +4,14 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>First Page</title>
-    <link href="FirstUI.css" rel="stylesheet">
+    <link href="./CSS/FirstUI.css" rel="stylesheet">
 </head>
 <body>
     <div class="Main">
         <div class="Heading">
             <div class="TOGETHER-name-logo">
                 <div class="Logo">
-                    <img src="PICTURE AND LOGO/PROJECT LOGO.png" alt="logo">
+                    <img src="./ASSETS/PROJECT-LOGO.png" alt="logo">
                 </div>
                 <div class="web-name">
                     <h1>BattleZoneHub</h1>
@@ -34,7 +34,7 @@
                 </div>
             </div>
             <div class="rightSideImage">
-                <img src="PICTURE AND LOGO/BACKGROUND PHOTO.png" alt="game image">
+                <img src="./ASSETS/BACKGROUND.png" alt="game image">
             </div>
         </div>
         <?php

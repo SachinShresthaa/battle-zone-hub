@@ -5,7 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
-    <link href="signup.css" rel="stylesheet">
+    <link href="./CSS/signup.css" rel="stylesheet">
 </head>
 <body>
     <div class="Main">
@@ -47,7 +47,7 @@
                 </div>
             </div>
             <div class="rightSideImage">
-                <img src="PICTURE AND LOGO/BACKGROUND PHOTO.png" alt="game image">
+                <img src="./ASSETS/BACKGROUND.png" alt="game image">
             </div>
         </div>
         <?php 

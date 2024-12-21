@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tournaments</title>
-    <link href="tournaments.css" rel="stylesheet">
+    <link href="./CSS/tournaments.css" rel="stylesheet">
     <style>
         body {
             font-family: Arial, sans-serif;
@@ -54,7 +54,6 @@
 
         .leftSide, .rightSide {
             flex: 1;
-            
             padding: 20px;
         }
         .leftSide {
@@ -78,7 +77,7 @@
 <body>
     <div class="Main">
         <?php
-        include "Header1.php";
+        include "Header.php";
         ?>
         <h1>Available Tournaments</h1>
         <div class="line"></div> 
@@ -86,7 +85,7 @@
             <div class="box">
                 <div class="leftSide">
                 </div>
-                <div class="rightSideImage">
+                <div class="rightSide">
                 </div>
             </div>
         </div>

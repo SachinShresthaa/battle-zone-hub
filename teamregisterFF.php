@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Team Registration PUBG</title>
-    <link rel="stylesheet" href="teamregister.css">
+    <link rel="stylesheet" href="./CSS/teamregister.css">
 </head>
 <body>
     <?php
@@ -12,7 +12,7 @@
     ?>
     <div class="main">
         <div class="left-side">
-            <img src="./PICTURE AND LOGO/FFregister.png" alt="PUBG Registration" style="margin-top: 0px;">
+            <img src="./ASSETS/FFregister.png" alt="PUBG Registration" style="margin-top: 0px;">
         </div>
         <div class="right-side">
             <h1>Team Registration</h1>

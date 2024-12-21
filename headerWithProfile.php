@@ -44,7 +44,7 @@
         <div class="Heading">
             <div class="TOGETHER-name-logo">
                 <div class="Logo">
-                    <img src="PICTURE AND LOGO/PROJECT LOGO.png" alt="logo">
+                    <img src="./ASSETS/PROJECT-LOGO.png" alt="logo">
                 </div>
                 <div class="web-name">
                     <h1>BattleZoneHub</h1>
@@ -52,7 +52,7 @@
             </div>
             <div class="profile">
                     <div class="profile-logo">
-                        <img src="PICTURE AND LOGO/profile.png" alt="profile">
+                        <img src="./ASSETS/profile.png" alt="profile">
                     </div>
                     <h1>Profile</h1>
             </div>

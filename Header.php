@@ -32,7 +32,7 @@
 <div class="Heading">
             <div class="TOGETHER-name-logo">
                 <div class="Logo">
-                    <img src="PICTURE AND LOGO/PROJECT LOGO.png" alt="logo">
+                    <img src="./ASSETS/PROJECT-LOGO.png" alt="logo">
                 </div>
                 <div class="web-name">
                     <h1>BattleZoneHub</h1>

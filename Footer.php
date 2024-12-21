@@ -53,10 +53,10 @@
     <div class="Footer">
         <div class="social">
             <p>Social Channel</p>
-            <a href=""><img src="PICTURE AND LOGO/FACEBOOK LOGO.png" alt="Facebook"></a>
-            <a href=""><img src="PICTURE AND LOGO/INSTRAGRAM LOGO.png" alt="Instagram"></a>
+            <a href=""><img src="./ASSETS/FACEBOOK-LOGO.png" alt="Facebook"></a>
+            <a href=""><img src="./ASSETS/INSTRAGRAM-LOGO.png" alt="Instagram"></a>
             <a href="https://www.youtube.com/channel/UCr14rNcua5zkxf2TUF0cCUA" target="_blank">
-                <img src="PICTURE AND LOGO/YOUTUBE LOGO.png" alt="YouTube">
+                <img src="./ASSETS/YOUTUBE-LOGO.png" alt="YouTube">
             </a>
         </div>
         <div class="AHAHA">
