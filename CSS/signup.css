@@ -133,3 +133,19 @@ font-size: 22px;
   height: auto;
   padding-bottom: 200px;
 }
+.error_msg{
+  color: red;
+  font-size: 25px;
+  margin-top: 8px;
+  padding-left: 40px;
+}
+.success_msg{
+  color: green;
+  font-size: 25px;
+  margin-top: 8px;
+  padding-left: 0px;
+}
+#email_msg{
+  color: white;
+  font-size: 20px;
+}

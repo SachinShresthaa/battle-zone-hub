@@ -92,3 +92,16 @@ form .login-button:hover {
   height: auto;
   border-radius: 15px;
 }
+.status-message {
+  margin-top: 5px;
+  font-size: 20px;
+}
+
+.error { 
+  color: red;
+  font-size: 20px;
+}
+.success { 
+  color: green;
+  font-size: 20px;
+}
