@@ -25,6 +25,7 @@
         .web-name h1 {
             font-size: 36px;
             margin-left: 15px;
+            color:white;
         }
     </style>
 </head>

@@ -1,5 +1,5 @@
 <?php
-session_start()
+session_start();
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -71,7 +71,7 @@ session_start()
             min-width: 250px;
             box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             border-radius: 8px;
-            z-index: 1;
+            z-index: 100;
             margin-top: 10px;
         }
 
@@ -117,6 +117,42 @@ session_start()
             color: #ff0000;
             border-top: 1px solid #ddd;
         }
+        .logo{
+            width: 40px;
+            height: 40px;
+            border-radius: 50%; 
+        }
+        .profile-image-container {
+            position: relative;
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            overflow: hidden;
+            cursor: pointer;
+        }
+
+        .profile-image-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .overlay {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: rgba(0, 0, 0, 0.5);
+            padding: 10px;
+            color: white;
+            text-align: center;
+            opacity: 0;
+            transition: opacity 0.3s;
+        }
+
+        .profile-image-container:hover .overlay {
+            opacity: 1;
+        }
     </style>
 </head>
 <body>
@@ -139,16 +175,25 @@ session_start()
             <div class="dropdown-content" id="myDropdown">
                 <div class="profile-info">
                     <div class="profile-info-header">
-                        <img src="./ASSETS/profile.png" alt="profile">
+                    <div class="profile-image-container">
+                <img id="profile-image" src="<?php echo $user['profile_image'] ?? 'ASSETS/default-profile.png'; ?>" alt="Profile Picture">
+                <input type="file" id="image-upload" name="profile_image" accept="image/*" style="display: none;">
+                <div class="overlay" onclick="document.getElementById('image-upload').click();">
+                    <i class="fas fa-camera"></i>
+                    <span>Change Photo</span>
+                </div>
+            </div>
                         <span> <?php echo ($_SESSION['fullname'])?></span>
                     </div>
                 </div>
-                <a href="settings.php" class="dropdown-item">Settings & privacy</a>
-                <a href="logout.php" class="dropdown-item">Log Out</a>
+                <a href="settings.php" class="dropdown-item"><img src="./admin/assets/logout.png" alt="" class="logo">Settings </a>
+             
+                <a href="logout.php" class="dropdown-item">   <img src="./admin/assets/logout.png" alt="" class="logo">Log Out</a>
             </div>
+          
         </div>
     </div>
-
+<script src="profile-img.js "></script>
     <script>
         function toggleDropdown() {
             document.getElementById("myDropdown").classList.toggle("show");
