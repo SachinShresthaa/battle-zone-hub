@@ -75,7 +75,6 @@ function validateEmail() {
    } else {
      emailMsg.innerText = "";
    }
-
    $.ajax({
        url: 'authenticationLog.php',
        type: 'POST',
@@ -102,3 +101,77 @@ function validateEmail() {
    button.disabled = false;
    return true;
 }
+$(document).ready(function() {
+  $('#fname').on('input', function() {
+      let input = $(this);
+      let fullName = input.val();
+      
+      // Function to capitalize first letter of each word
+      function capitalizeWords(str) {
+          // Split the string into words
+          return str.replace(/\b\w+/g, function(word) {
+              // Capitalize first letter, rest lowercase
+              return word.charAt(0).toUpperCase() + word.slice(1).toLowerCase();
+          });
+      }
+
+      // Get cursor position before changing value
+      let start = this.selectionStart;
+      let end = this.selectionEnd;
+
+      // Apply capitalization
+      let capitalizedName = capitalizeWords(fullName);
+      
+      // Only update if there's a change to avoid cursor jumping
+      if (fullName !== capitalizedName) {
+          input.val(capitalizedName);
+          
+          // Restore cursor position
+          this.setSelectionRange(start, end);
+      }
+
+      // Validation
+      let nameArray = capitalizedName.trim().split(/\s+/);
+      let isValid = true;
+      let errorMsg = '';
+
+      if (capitalizedName.trim().length === 0) {
+          isValid = false;
+          errorMsg = 'Please enter your full name';
+      }
+      else if (nameArray.length < 2) {
+          isValid = false;
+          errorMsg = 'Please enter both your first name and surname';
+      }
+      else {
+          for (let name of nameArray) {
+              if (name.length === 0) continue;
+
+              // Check if name contains only letters
+              if (!/^[A-Za-z]+$/.test(name)) {
+                  isValid = false;
+                  errorMsg = 'Names must contain only letters';
+                  break;
+              }
+
+              // Check minimum length for each name
+              if (name.length < 2) {
+                  isValid = false;
+                  errorMsg = 'Each name must be at least 2 characters long';
+                  break;
+              }
+          }
+      }
+
+      // Apply validation results
+      if (!isValid) {
+          $(this).addClass('error');
+          $('#name_msg').text(errorMsg).addClass('error_msg');
+          $('#button').prop('disabled', true);
+      } else {
+          $(this).removeClass('error');
+          $('#name_msg').text('').removeClass('error_msg');
+          $('#button').prop('disabled', false);
+      }
+  });
+});

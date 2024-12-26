@@ -23,6 +23,7 @@ include("connection.php");
                     <form method="POST" action="signup_insert.php">
                         <label for="fname">Full Name</label>
                         <input type="text" id="fname" name="fname" placeholder="Enter your Full Name">
+                        <div id="name_msg"></div>
                         
                         <label for="email">Email</label>
                         <input type="email" id="email" name="email" placeholder="Enter your email" required value="<?php echo isset($_GET['signup']) && $_GET['signup'] == 'success' ? '' : ''; ?>">
