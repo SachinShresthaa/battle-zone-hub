@@ -44,9 +44,6 @@ session_start();
         }
 
         .profile-trigger {
-            display: flex;
-            align-items: center;
-            gap: 15px;
             background: none;
             border: none;
             cursor: pointer;
@@ -57,19 +54,23 @@ session_start();
             height: 40px;
             border-radius: 50%;
         }
-
-        .profile h1 {
-            color: white;
-            font-size: 24px;
+        .profile-info span{
+            font-size: 22px;
+            font-weight:bold;
+        }
+        .edit-option span{
+            font-size:22px;
+            padding-left:20px;
         }
 
         .dropdown-content {
+            
+            border: 2px solid #ddd;
             display: none;
             position: absolute;
             right: 0;
-            background-color: red;
+            background-color: #d4d2d2;
             min-width: 250px;
-            box-shadow: 0px 8px 16px 0px rgba(0,0,0,0.2);
             border-radius: 8px;
             z-index: 100;
             margin-top: 10px;
@@ -81,28 +82,13 @@ session_start();
 
         .profile-info {
             padding: 15px;
-            border-bottom: 1px solid #ddd;
-        }
-
-        .profile-info-header {
+            border-bottom: 2px solid #ddd;
             display: flex;
             align-items: center;
-            gap: 10px;
-            margin-bottom: 10px;
+            gap: 15px;
         }
-
-        .profile-info-header img {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-        }
-
-        .profile-info-header span {
-            font-weight: bold;
-        }
-
         .dropdown-item {
-            padding: 12px 15px;
+            padding: 14px 15px;
             text-decoration: none;
             display: block;
             color: black;
@@ -110,48 +96,33 @@ session_start();
         }
 
         .dropdown-item:hover {
-            background-color: #f0f0f0;
-        }
-
-        .logout {
-            color: #ff0000;
-            border-top: 1px solid #ddd;
+            background-color:rgb(255, 255, 255);
         }
         .logo{
-            width: 40px;
-            height: 40px;
-            border-radius: 50%; 
+            width: 30px;
+            height: 30px;
+            border-radius: 50%;
         }
         .profile-image-container {
             position: relative;
-            width: 150px;
-            height: 150px;
+            width: 40px;
+            height: 40px;   
             border-radius: 50%;
             overflow: hidden;
             cursor: pointer;
         }
-
         .profile-image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
         }
-
         .overlay {
             position: absolute;
             bottom: 0;
             left: 0;
             right: 0;
             background: rgba(0, 0, 0, 0.5);
-            padding: 10px;
-            color: white;
-            text-align: center;
             opacity: 0;
-            transition: opacity 0.3s;
-        }
-
-        .profile-image-container:hover .overlay {
-            opacity: 1;
         }
     </style>
 </head>
@@ -170,25 +141,21 @@ session_start();
                 <div class="profile-logo">
                     <img src="./ASSETS/profile.png" alt="profile">
                 </div>
-                <h1>Profile</h1>
             </button>
             <div class="dropdown-content" id="myDropdown">
                 <div class="profile-info">
-                    <div class="profile-info-header">
                     <div class="profile-image-container">
-                <img id="profile-image" src="<?php echo $user['profile_image'] ?? 'ASSETS/default-profile.png'; ?>" alt="Profile Picture">
-                <input type="file" id="image-upload" name="profile_image" accept="image/*" style="display: none;">
-                <div class="overlay" onclick="document.getElementById('image-upload').click();">
-                    <i class="fas fa-camera"></i>
-                    <span>Change Photo</span>
-                </div>
-            </div>
-                        <span> <?php echo ($_SESSION['fullname'])?></span>
+                        <img id="profile-image" src="<?php echo $user['profile_image'] ?? 'ASSETS/profile.png'; ?>" alt="Profile Picture">
+                        <input type="file" id="image-upload" name="profile_image" accept="image/*" style="display: none;">
+                        <div class="overlay" onclick="document.getElementById('image-upload').click();">
+                        </div>
                     </div>
+                    <span> <?php echo ($_SESSION['fullname'])?></span>
                 </div>
-                <a href="settings.php" class="dropdown-item"><img src="./admin/assets/logout.png" alt="" class="logo">Settings </a>
-             
-                <a href="logout.php" class="dropdown-item">   <img src="./admin/assets/logout.png" alt="" class="logo">Log Out</a>
+                <div class="edit-option">
+                    <a href="settings.php" class="dropdown-item"><img src="./assets/setting.png" alt="" class="logo"><span>Settings</span></a>
+                    <a href="logout.php" class="dropdown-item"><img src="./admin/assets/logout.png" alt="" class="logo"><span>Log Out</span></a>
+                </div>
             </div>
           
         </div>
@@ -198,8 +165,6 @@ session_start();
         function toggleDropdown() {
             document.getElementById("myDropdown").classList.toggle("show");
         }
-
-        // Close dropdown when clicking outside
         window.onclick = function(event) {
             if (!event.target.matches('.profile-trigger') && 
                 !event.target.matches('.profile-trigger *')) {
