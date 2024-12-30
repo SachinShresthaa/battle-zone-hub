@@ -1,5 +1,21 @@
 <?php
 session_start();
+include 'connection.php';
+
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
+    $user_id = $_SESSION['user_id']; 
+    $delete_query = "DELETE FROM users WHERE id = ?";
+    $stmt = $conn->prepare($delete_query);
+    $stmt->bind_param("i", $user_id);
+
+    if ($stmt->execute()) {
+        session_destroy();
+        header("Location: firstUi.php");
+        exit();
+    } else {
+        $error_message = "Error deleting account. Please try again.";
+    }
+}
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,17 +70,22 @@ session_start();
             height: 40px;
             border-radius: 50%;
         }
-        .profile-info span{
+
+        .profile-info span {
             font-size: 22px;
-            font-weight:bold;
-        }
-        .edit-option span{
-            font-size:22px;
-            padding-left:20px;
+            font-weight: bold;
+            color: black;
         }
 
+        .edit-option span {
+            font-size: 22px;
+            padding-left: 20px;
+            color: black;
+        }
+        .edit-option{
+            border: 2px solidrgb(166, 164, 164);
+        }
         .dropdown-content {
-            
             border: 2px solid #ddd;
             display: none;
             position: absolute;
@@ -76,6 +97,12 @@ session_start();
             margin-top: 10px;
         }
 
+        .submenu {
+            margin-left: 20px;
+            display: none;
+            background-color:rgb(246, 160, 160);
+            border: 2px solid gray;
+        }
         .show {
             display: block;
         }
@@ -87,6 +114,7 @@ session_start();
             align-items: center;
             gap: 15px;
         }
+
         .dropdown-item {
             padding: 14px 15px;
             text-decoration: none;
@@ -96,33 +124,28 @@ session_start();
         }
 
         .dropdown-item:hover {
-            background-color:rgb(255, 255, 255);
+            background-color: rgb(255, 255, 255);
         }
-        .logo{
+
+        .logo {
             width: 30px;
             height: 30px;
             border-radius: 50%;
         }
+
         .profile-image-container {
             position: relative;
             width: 40px;
-            height: 40px;   
+            height: 40px;
             border-radius: 50%;
             overflow: hidden;
             cursor: pointer;
         }
+
         .profile-image-container img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-        }
-        .overlay {
-            position: absolute;
-            bottom: 0;
-            left: 0;
-            right: 0;
-            background: rgba(0, 0, 0, 0.5);
-            opacity: 0;
         }
     </style>
 </head>
@@ -147,27 +170,48 @@ session_start();
                     <div class="profile-image-container">
                         <img id="profile-image" src="<?php echo $user['profile_image'] ?? 'ASSETS/profile.png'; ?>" alt="Profile Picture">
                         <input type="file" id="image-upload" name="profile_image" accept="image/*" style="display: none;">
-                        <div class="overlay" onclick="document.getElementById('image-upload').click();">
-                        </div>
+                        <div class="overlay" onclick="document.getElementById('image-upload').click();"></div>
                     </div>
-                    <span> <?php echo ($_SESSION['fullname'])?></span>
+                    <span><?php echo ($_SESSION['fullname']) ?></span>
                 </div>
                 <div class="edit-option">
-                    <a href="settings.php" class="dropdown-item"><img src="./assets/setting.png" alt="" class="logo"><span>Settings</span></a>
-                    <a href="logout.php" class="dropdown-item"><img src="./admin/assets/logout.png" alt="" class="logo"><span>Log Out</span></a>
+                    <div class="dropdown-item" onclick="toggleSubmenu('submenu-settings')">
+                        <img src="./assets/setting.png" alt="" class="logo">
+                        <span>Settings</span>
+                    </div>
+                    <div id="submenu-settings" class="submenu">
+                        <form method="POST" id="deleteAccountForm" style="margin: 0;">
+                            <a  class="dropdown-item" onclick="confirmDelete()"><span>Delete Account?</span></a>
+                            <input type="hidden" name="delete_account" value="1">
+                        </form>
+                    </div>
+                    <a href="logout.php" class="dropdown-item">
+                        <img src="./admin/assets/logout.png" alt="" class="logo">
+                        <span>Log Out</span>
+                    </a>
                 </div>
             </div>
-          
         </div>
     </div>
-<script src="profile-img.js "></script>
     <script>
         function toggleDropdown() {
             document.getElementById("myDropdown").classList.toggle("show");
         }
+        function toggleSubmenu(submenuId) {
+            const submenu = document.getElementById(submenuId);
+            submenu.classList.toggle("show");
+        }
+        function confirmDelete() {
+            if (confirm("Are you sure you want to delete your account?")) {
+                document.getElementById('deleteAccountForm').submit();
+            }
+        }
+
         window.onclick = function(event) {
-            if (!event.target.matches('.profile-trigger') && 
-                !event.target.matches('.profile-trigger *')) {
+            if (!event.target.matches('.profile-trigger') &&
+                !event.target.matches('.profile-trigger *') &&
+                !event.target.matches('.dropdown-item') &&
+                !event.target.matches('.dropdown-item *')) {
                 var dropdowns = document.getElementsByClassName("dropdown-content");
                 for (var i = 0; i < dropdowns.length; i++) {
                     var openDropdown = dropdowns[i];
