@@ -24,6 +24,13 @@
                         <h3>PUBG</h3>
                     </a>
             </div>
+            <div class="future-games">
+                <img src="./ASSETS/coc.jpg">
+                <img src="./ASSETS/COD.jpg">
+                <img src="./ASSETS/mlbb.jpg">
+                <img src="./ASSETS/fortnite.jpg">
+                <img src="./ASSETS/valorant.jpg">
+            </div>
         </div>
         <?php
             include "Footer.php"
