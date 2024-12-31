@@ -21,20 +21,28 @@
             </div>
             <div class="properties">
                 <div class="tournaments">
-                    <img src="./ASSETS/TOURNAMENT.png" alt="tournaments">
-                    <h1>Tournaments</h1>
+                    <a href="tournaments.php">
+                        <img src="./ASSETS/TOURNAMENT.png" alt="tournaments">
+                        <h1>Tournaments</h1>
+                    </a>
                 </div>
                 <div class="LeaderBoard">
-                    <img src="./ASSETS/Ranking.png" alt="LeaderBoard" style="width: 120px; height: 90px;">
-                    <h1>LeaderBoard</h1>
+                    <a href="LeaderBoard.php">
+                        <img src="./ASSETS/Ranking.png" alt="LeaderBoard" style="width: 120px; height: 90px;">
+                        <h1>LeaderBoard</h1>
+                    </a>
                 </div>
                 <div class="Live">
-                    <img src="./ASSETS/YOUTUBE-LIVE.png" alt="live" style="width: 190px; margin-top: 8px; " >
-                    <h1 style="padding-bottom: 10px;">YouTube Live</h1>
+                    <a href="sharelive.php">
+                        <img src="./ASSETS/YOUTUBE-LIVE.png" alt="live" style="width: 190px; " >
+                        <h1 style="padding-bottom:20px;">YouTube Live</h1>
+                    </a>
                 </div>
                 <div class="matches">
-                    <img src="./ASSETS/MATCHES.png" alt="MATCHES">
-                    <h1>My Matches</h1>
+                    <a href="myMatches.php">
+                        <img src="./ASSETS/MATCHES.png" alt="MATCHES">
+                        <h1>My Matches</h1>
+                    </a>
                 </div>
             </div>
         </div>
