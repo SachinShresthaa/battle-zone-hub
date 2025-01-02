@@ -4,11 +4,15 @@ require_once("../connection.php");
 
 $error_message = $success_message = "";
 
+// Define available categories
+$available_categories = ['pubg', 'freefire']; // Only PUBG and FreeFire categories
+
 if ($_SERVER["REQUEST_METHOD"] === "POST") {
     if (isset($_POST['youtube_url'])) {
         $youtube_url = $conn->real_escape_string($_POST['youtube_url']);
         $title = $conn->real_escape_string($_POST['title']);
         $description = $conn->real_escape_string($_POST['description']);
+        $category = $conn->real_escape_string($_POST['category']);
 
         $video_id = '';
 
@@ -49,9 +53,9 @@ if ($_SERVER["REQUEST_METHOD"] === "POST") {
             if ($check_result && $check_result->num_rows > 0) {
                 $error_message = "A video with this YouTube ID already exists.";
             } else {
-                // Insert into the database
-                $sql = "INSERT INTO youtube_lives (video_id, title, description, thumbnail_url) 
-                        VALUES ('$video_id', '$title', '$description', '$thumbnail_url')";
+                // Insert into the database with category
+                $sql = "INSERT INTO youtube_lives (video_id, title, description, thumbnail_url, category) 
+                        VALUES ('$video_id', '$title', '$description', '$thumbnail_url', '$category')";
 
                 if ($conn->query($sql) === TRUE) {
                     $success_message = "Live stream added successfully!";
@@ -93,6 +97,23 @@ $conn->close();
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage YouTube Live Streams</title>
     <link href="./CSS/sharelive.css" rel="stylesheet">
+    <style>
+        .category-select {
+            padding: 8px;
+            border-radius: 4px;
+            border: 1px solid #ddd;
+            width: 100%;
+            margin-bottom: 10px;
+        }
+        .category-badge {
+            display: inline-block;
+            padding: 4px 8px;
+            border-radius: 4px;
+            background-color: #007bff;
+            color: white;
+            font-size: 0.9em;
+        }
+    </style>
 </head>
 <body>
     <div class="container">
@@ -116,6 +137,17 @@ $conn->close();
                     <input type="text" name="title" id="title" placeholder="Enter stream title" required>
                 </div>
                 <div class="form-group">
+                    <label for="category">Category:</label>
+                    <select name="category" id="category" class="category-select" required>
+                        <option value="">Select a category</option>
+                        <?php foreach ($available_categories as $cat): ?>
+                            <option value="<?php echo htmlspecialchars($cat); ?>">
+                                <?php echo ucfirst(htmlspecialchars($cat)); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div class="form-group">
                     <label for="description">Description:</label>
                     <textarea name="description" id="description" rows="4" placeholder="Enter stream description" required></textarea>
                 </div>
@@ -128,38 +160,44 @@ $conn->close();
                 </div>
             </form>
         </div>
-            <div class="fetch-data">
-                <h2>Video List</h2>
-                <?php if (!empty($videos)): ?>
-                    <table style="margin-bottom: 50px;">
-                        <thead>
+        <div class="fetch-data">
+            <h2>Video List</h2>
+            <?php if (!empty($videos)): ?>
+                <table style="margin-bottom: 50px;">
+                    <thead>
+                        <tr>
+                            <th>Thumbnail</th>
+                            <th>Title</th>
+                            <th>Category</th>
+                            <th>Description</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($videos as $video): ?>
                             <tr>
-                                <th>Thumbnail</th>
-                                <th>Title</th>
-                                <th>Description</th>
-                                <th>Actions</th>
+                                <td><img src="<?php echo htmlspecialchars($video['thumbnail_url']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>" width="120"></td>
+                                <td><?php echo htmlspecialchars($video['title']); ?></td>
+                                <td>
+                                    <span class="category-badge">
+                                        <?php echo ucfirst(htmlspecialchars($video['category'] ?: 'Uncategorized')); ?>
+                                    </span>
+                                </td>
+                                <td><?php echo htmlspecialchars($video['description']); ?></td>
+                                <td>
+                                    <form method="POST" action="" onsubmit="return confirm('Are you sure you want to delete this stream?');">
+                                        <input type="hidden" name="tournament_id" value="<?php echo $video['id']; ?>">
+                                        <button type="submit" class="delete-btn">Delete</button>
+                                    </form>
+                                </td>
                             </tr>
-                        </thead>
-                        <tbody>
-                            <?php foreach ($videos as $video): ?>
-                                <tr>
-                                    <td><img src="<?php echo htmlspecialchars($video['thumbnail_url']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>" width="120"></td>
-                                    <td><?php echo htmlspecialchars($video['title']); ?></td>
-                                    <td><?php echo htmlspecialchars($video['description']); ?></td>
-                                    <td>
-                                        <form method="POST" action="" onsubmit="return confirm('Are you sure you want to delete this stream?');">
-                                            <input type="hidden" name="tournament_id" value="<?php echo $video['id']; ?>">
-                                            <button type="submit" class="delete-btn">Delete</button>
-                                        </form>
-                                    </td>
-                                </tr>
-                            <?php endforeach; ?>
-                        </tbody>
-                    </table>
-                <?php else: ?>
-                    <p>No live streams available.</p>
-                <?php endif; ?>
-            </div>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            <?php else: ?>
+                <p>No live streams available.</p>
+            <?php endif; ?>
+        </div>
     </div>
 </body>
 </html>
