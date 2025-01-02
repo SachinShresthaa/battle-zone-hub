@@ -12,9 +12,13 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    max-width:800px;
+    width:100%;
     margin: 50px auto;
     color: white;
+}
+.upper-form{
+  width: 100%;
+  padding: 0px 450px;
 }
 h2 {
   text-align: center;
@@ -50,6 +54,7 @@ font-size: 20px;
 }
 .btn {
   display: inline-block;
+  width: 100%;
   padding: 18px;
   background:rgb(229, 23, 23);
   color: white;
@@ -73,7 +78,7 @@ font-size: 20px;
   text-align: center;
   font-size:18px;
 }
-table {
+table { 
   width: 100%;
   border-collapse: collapse;
 }
@@ -100,6 +105,10 @@ table th {
 .delete-btn:hover {
   background: #cc0000;
 }
-.nothing{
-  padding: 50px;
+p{
+  font-size: 22px;
+}
+.fetch-data{
+  width: 100%;
+  padding: 100px 200px;
 }

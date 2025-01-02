@@ -1,77 +1,98 @@
 <?php
-include 'header.php';
+    include "Header.php";
 ?>
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <link href="./CSS/adminPanel.css" rel="stylesheet">
+</head>
+<body>
 <div class="main">
     <div class="nav-body">
         <nav class="nav-main">
-            <h1>Admin Panel</h1>
-            <ul>
-                <li><a href="#addTournament">Add Tournament</a></li>
-                <li><a href="#manageYouTube">Manage YouTube Live</a></li>
-                <li><a href="#viewMatches">View Registered Matches</a></li>
-                <li><a href="#updateLeaderboard">Update Leaderboard</a></li>
-                <li><a href="#manageUsers">Manage Users</a></li>
-            </ul>
+                <div class="side-bar">
+                    <a href="./adminPanel.php?dashboard">
+                        <div class="nav-option">
+                            <img src="./ASSETS/dashboard.png" alt="dashboard" class="option-icon">
+                            <h3>Dashboard</h3>
+                        </div>
+                    </a>
+                    <a href="./adminPanel.php?users">
+                        <div class="nav-option">
+                            <img src="./ASSETS/users.png" alt="users" class="option-icon">
+                            <h3>Users</h3>
+                        </div>
+                    </a>
+                    <a href="./adminPanel.php?tournaments">
+                        <div class="nav-option">
+                            <img src="./ASSETS/TOURNAMENT.png" alt="tournament" class="option-icon">
+                            <h3>Tournaments</h3>
+                        </div>
+                    </a>
+                    <a href="./adminPanel.php?room-cards">
+                        <div class="nav-option">
+                            <img src="./ASSETS/card.png" alt="room-cards" class="option-icon">
+                            <h3>Room Cards</h3>
+                        </div>
+                    </a>
+                    <a href="./adminPanel.php?leaderboard">
+                        <div class="nav-option">
+                            <img src="./ASSETS/Ranking.png" alt="ranking" class="option-icon">
+                            <h3>Leaderboard</h3>
+                        </div>
+                    </a>
+                    <a href="./adminPanel.php?sharelive">
+                        <div class="nav-option">
+                            <img src="./ASSETS/sharelive.png" alt="live" class="option-icon">
+                            <h3>Share Live</h3>
+                        </div>
+                    </a>
+                    <a href="../logout.php">
+                        <div class="nav-option option6">
+                            <img src="./ASSETS/logout.png" alt="Logout" class="option-icon">
+                            <h3>Logout</h3>
+                        </div>
+                    </a>
+                </div>
         </nav>
     </div>
+    <div class="dashboard-main">
+        <?php
+        if (!isset($_GET['dashboard']) && !isset($_GET['users']) && !isset($_GET['tournaments']) && !isset($_GET['room-cards']) && !isset($_GET['leaderboard']) && !isset($_GET['sharelive'])) {
+            include 'dashboard.php';
+        }
 
-    <div id="addTournament">
-        <h2>Add Tournament</h2>
-        <form action="addTournament.php" method="POST" enctype="multipart/form-data">
-            <div>
-                <label for="thumbnail">Thumbnail:</label>
-                <input type="file" id="thumbnail" name="thumbnail" required>
-            </div>
-            <div>
-                <label for="tournamentName">Tournament Name:</label>
-                <input type="text" id="tournamentName" name="tournamentName" required>
-            </div>
-            <div>
-                <label for="description">Description:</label>
-                <textarea id="description" name="description" required></textarea>
-            </div>
-            <button type="submit">Add Tournament</button>
-        </form>
-    </div>
+        if (isset($_GET['dashboard'])) {
+            include 'dashboard.php';
+        }
 
-    <div id="manageYouTube">
-        <h2>Manage YouTube Live</h2>
-        <form action="manageYouTube.php" method="POST">
-            <div>
-                <label for="youtubeLink">YouTube Link:</label>
-                <input type="text" id="youtubeLink" name="youtubeLink" required>
-            </div>
-            <button type="submit">Add YouTube Live</button>
-        </form>
-    </div>
+        if (isset($_GET['users'])) {
+            include 'manage_users.php';
+        }
 
-    <div id="viewMatches">
-        <h2>View Registered Matches</h2>
-        <!-- Code to display registered matches will go here -->
-    </div>
+        if (isset($_GET['tournaments'])) {
+            include 'manage_tournament.php';
+        }
 
-    <div id="updateLeaderboard">
-        <h2>Update Leaderboard</h2>
-        <form action="updateLeaderboard.php" method="POST">
-            <div>
-                <label for="userId">User ID:</label>
-                <input type="text" id="userId" name="userId" required>
-            </div>
-            <div>
-                <label for="score">Score:</label>
-                <input type="number" id="score" name="score" required>
-            </div>
-            <button type="submit">Update Score</button>
-        </form>
-    </div>
+        if (isset($_GET['room-cards'])) {
+            include 'room-cards.php';
+        }
 
-    <div id="manageUsers">
-        <h2>Manage Users</h2>
-        <!-- Code to manage users will go here -->
+        if (isset($_GET['leaderboard'])) {
+            include 'leaderboard.php';
+        }
+
+        if (isset($_GET['sharelive'])) {
+            include 'sharelive.php';
+        }
+        ?>
     </div>
 </div>
-
+</body>
+</html>
 <?php
-include 'footer.php';
+    include "Footer.php";
 ?>

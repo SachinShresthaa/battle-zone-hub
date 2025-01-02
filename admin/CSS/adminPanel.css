@@ -21,7 +21,7 @@ body {
     height: calc(100vh - 100px);
     width: 100%;
     overflow-x: hidden;
-    padding: 40px 30px 30px 30px;
+    padding: 40px 30px 100px 30px;
 }
 .nav-body {
     height: calc(100vh - 100px);
@@ -34,8 +34,6 @@ body {
     width: 260px;
     background-color: #d4d2d2;
     position: absolute;
-    top: 0px;
-    left: 00;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
@@ -46,6 +44,7 @@ body {
     flex-direction: column;
     align-items: center;
     gap: 30px;
+    padding-top: 30px;
 }
 img{
     width: 35px;

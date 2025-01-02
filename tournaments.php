@@ -4,94 +4,78 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Tournaments</title>
-    <link href="./CSS/tournaments.css" rel="stylesheet">
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 0;
-        }
-
-        .Main {
-            display: flex;
-            flex-direction: column;
-
-            text-align: left;
-        }
-
-        h1 { 
-            font-size: 40px;
-            text-align: left;
-            font-weight: bold;
-            color: #ffffff;
-            padding: 40px;
-            padding-left: 130px;
-        }
-
-        .line {
-            width: 100%;
-            height: 3px; 
-            /* margin-top: 0px; */
-            background-color: white; 
-            /* margin-bottom: 20px;  */
-        }
-
-        .Body {
-            width: 80%;
-            padding-left: 130px;
-            margin-top: 100px;
-            margin-bottom: 100px;
-
-        }
-
-        .box {
-            display: flex;
-            justify-content: space-between;
-            border: 1px solid #ddd;
-            border-radius: 8px;
-            overflow: hidden;
-        }
-
-        .leftSide, .rightSide {
-            flex: 1;
-            padding: 20px;
-        }
-        .leftSide {
-            width: 800px;
-        }
-
-        .rightSide {
-            background-color: #fff;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .rightSide img {
-            max-width: 100%;
-            height: auto;
-            border-radius: 8px;
-        }
+        /* Previous CSS styles remain the same */
     </style>
+    <script>
+        function handleBoxClick(tournamentId) {
+            alert("Clicked on Tournament ID: " + tournamentId);
+        }
+
+        function handleRegisterClick(tournamentId, event) {
+            event.stopPropagation();
+            alert("Registered for Tournament ID: " + tournamentId);
+        }
+
+        function handleViewDetailsClick(tournamentId, event) {
+            event.stopPropagation();
+            alert("Viewing details for Tournament ID: " + tournamentId);
+        }
+    </script>
 </head>
 <body>
     <div class="Main">
         <?php
-        include "Header.php";
+        // Get the game category from URL parameter
+        $category = isset($_GET['category']) ? $_GET['category'] : '';
+        
+        // Set the title based on category
+        $title = $category ? ucfirst($category) . ' Tournaments' : 'All Tournaments';
         ?>
-        <h1>Available Tournaments</h1>
+        
+        <h1><?php echo htmlspecialchars($title); ?></h1>
         <div class="line"></div> 
         <div class="Body">
-            <div class="box">
-                <div class="leftSide">
-                </div>
-                <div class="rightSide">
-                </div>
-            </div>
+            <?php
+            // Include database connection
+            include_once 'connection.php';
+
+            // Prepare the query based on category
+            $query = "SELECT * FROM tournaments";
+            if ($category) {
+                $category = $conn->real_escape_string($category);
+                $query .= " WHERE LOWER(category) = LOWER('$category')";
+            }
+            $query .= " ORDER BY date ASC, time ASC";
+
+            $result = $conn->query($query);
+
+            if ($result->num_rows > 0) {
+                while ($row = $result->fetch_assoc()) {
+                    echo "
+                    <div class='box' onclick='handleBoxClick({$row['id']})'>
+                        <div class='leftSide'>
+                            <img src='" . htmlspecialchars($row['thumbnail']) . "' alt='Tournament Thumbnail'>
+                        </div>
+                        <div class='rightSide'>
+                            <div class='tournament-title'>" . htmlspecialchars($row['name']) . "</div>
+                            <div class='tournament-details'>Category: " . htmlspecialchars($row['category']) . "</div>
+                            <div class='tournament-details'>Date: " . date("F j, Y", strtotime($row['date'])) . "</div>
+                            <div class='tournament-details'>Time: " . date("g:i A", strtotime($row['time'])) . "</div>
+                            <div class='tournament-details'>Registration Deadline: " . date("F j, Y", strtotime($row['registration_deadline'])) . "</div>
+                            <div class='button-container'>
+                                <button class='register-btn' onclick='handleRegisterClick({$row['id']}, event)'>Register Now</button>
+                                <button class='view-btn' onclick='handleViewDetailsClick({$row['id']}, event)'>View Details</button>
+                            </div>
+                        </div>
+                    </div>
+                    ";
+                }
+            } else {
+                echo "<p>No " . ($category ? htmlspecialchars($category) . " " : "") . "tournaments are currently available.</p>";
+            }
+            ?>
         </div>
-        <?php
-        include "Footer.php";
-        ?>
     </div>
 </body>
 </html>

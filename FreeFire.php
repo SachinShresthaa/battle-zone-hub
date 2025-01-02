@@ -20,12 +20,12 @@
                 <h1>FREE FIRE</h1>
             </div>
             <div class="properties">
-                <div class="tournaments">
-                    <a href="tournaments.php">
-                        <img src="./ASSETS/TOURNAMENT.png" alt="tournaments">
-                        <h1>Tournaments</h1>
-                    </a>
-                </div>
+                <<div class="tournaments">
+    <a href="tournaments.php?category=freefire">
+        <img src="./ASSETS/TOURNAMENT.png" alt="tournaments">
+        <h1>Tournaments</h1>
+    </a>
+</div>
                 <div class="LeaderBoard">
                     <a href="LeaderBoard.php">
                         <img src="./ASSETS/Ranking.png" alt="LeaderBoard" style="width: 120px; height: 90px;">

@@ -49,3 +49,22 @@
 .games a{
     text-decoration: none;
 }
+.future-games{
+    margin: 100px 0 0 250px;
+    width: 70%;
+    height: 450px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
+}
+.future-games img {
+    width: 10%;
+    height: 100%;
+    object-fit: cover;
+    border-radius: 10px;
+    border: 2px solid white(255,255,255,0.6);
+    transition: all ease-in-out 0.5s;
+}
+.future-games img:hover {
+    width: 25%;
+}

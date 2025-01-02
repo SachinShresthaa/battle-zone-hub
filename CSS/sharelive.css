@@ -25,18 +25,21 @@ h2{
 }
 .stream-grid { 
     display: grid; 
-    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr)); 
     gap: 20px; 
+    height: 300px;
+    padding-left: 150px;
 }
 .stream-card { 
     border: 2px solid rgb(255, 255, 255); 
     padding: 15px; 
+    display: flex;
     border-radius: 8px; 
     background: #d4d2d2; 
+    width: 900px;
 }
 .thumbnail { 
-    width: 100%; 
-    height: 180px; 
+    width: 400px; 
+    height: 270px; 
     object-fit: cover; 
     border-radius: 4px; 
 }
@@ -49,22 +52,29 @@ h2{
     border-radius: 4px;
     margin-top: 10px;
     text-align: center;
-    font-size: 18px;
+    font-size: 22px;
+    width: 100%;
 }
 .watch-btn:hover { 
     background: #cc0000; 
 }
+.noflex{
+    text-align: left;
+    width: 60%;
+}
 h3{
     font-weight: bold;
-    font-size: 22px; 
+    font-size: 40px; 
     color: black;
+    padding-left: 30px;
 }
 .description { 
     margin: 10px 0; 
-    max-height: 100px; 
+    height: 130px; 
     overflow-y: auto; 
-    font-size: 20px; 
+    font-size: 30px; 
     color: black; 
+    padding-left: 30px;
 }
 .video-container { 
     position: relative; 
@@ -91,4 +101,26 @@ h1{
 }
 p{
     font-size: 25px;
+}
+.youtube-link{
+    padding-top: 100px;
+}
+.move-button{
+   padding-left: 30px;
+   width: 100%;
+}
+.visit-btn { 
+    display: inline-block;
+    padding: 15px 25px;
+    background: #ff0000;
+    color: white;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 10px;
+    text-align: center;
+    font-size: 22px;
+    width: 15%;
+}
+.visit-btn:hover{
+    background-color:#cc0000;
 }
