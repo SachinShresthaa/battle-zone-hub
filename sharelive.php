@@ -10,8 +10,21 @@
 
     // Fetch live streams for the selected category
     $category = isset($_GET['category']) ? $_GET['category'] : '';
+    $video_id = isset($_GET['video_id']) ? $_GET['video_id'] : '';
     $streams = [];
-    if (!empty($category)) {
+    $stream = null;
+
+    // If a specific video ID is provided, fetch its details
+    if (!empty($video_id)) {
+        $sql = "SELECT * FROM youtube_lives WHERE video_id = ?";
+        $stmt = $conn->prepare($sql);
+        $stmt->bind_param("s", $video_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stream = $result->fetch_assoc();
+        $stmt->close();
+    } elseif (!empty($category)) {
+        // Otherwise, fetch all streams for the category
         $sql = "SELECT * FROM youtube_lives WHERE LOWER(category) = LOWER(?) ORDER BY created_at DESC";
         $stmt = $conn->prepare($sql);
         $stmt->bind_param("s", $category);
@@ -62,35 +75,49 @@
 </head>
 <body>
 <div class="container">
-    <h2>Live Streams</h2>
-    <div class="category-buttons">
-        <a href="?category=PUBG" class="category-btn">PUBG Live Streams</a>
-        <a href="?category=FreeFire" class="category-btn">FreeFire Live Streams</a>
-    </div>
-    <div class="stream-grid">
-        <?php if (!empty($streams)): ?>
-            <?php foreach ($streams as $stream): ?>
-                <div class="stream-card">
-                    <img src="admin/<?php echo htmlspecialchars($stream['thumbnail_url']); ?>" 
-                         alt="<?php echo htmlspecialchars($stream['title']); ?>" 
-                         class="thumbnail"
-                         onerror="this.src='default-thumbnail.jpg';">
-                    <div class="noflex">
-                        <h3><?php echo htmlspecialchars($stream['title']); ?></h3>
-                        <div class="description">
-                            <?php echo htmlspecialchars($stream['description']); ?>
-                        </div>
-                        <div class="move-button">
-                            <a href="https://www.youtube.com/watch?v=<?php echo htmlspecialchars($stream['video_id']); ?>" 
-                               target="_blank" class="watch-btn">Watch Now</a>
+    <?php if (!empty($stream)): ?>
+        <!-- Single Stream View -->
+        <div class="video-container">
+            <iframe 
+                src="https://www.youtube.com/embed/<?php echo htmlspecialchars($stream['video_id']); ?>?autoplay=1" 
+                frameborder="0" 
+                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" 
+                allowfullscreen>
+            </iframe>
+        </div>
+        <div class="stream-info">
+            <h1><?php echo htmlspecialchars($stream['title']); ?></h1>
+            <p><?php echo htmlspecialchars($stream['description']); ?></p>
+        </div>
+    <?php else: ?>
+        <!-- All Streams View -->
+        <h2>Live Streams</h2>
+        <div class="stream-grid">
+            <?php if (!empty($streams)): ?>
+                <?php foreach ($streams as $stream): ?>
+                    <div class="stream-card">
+                        <img src="admin/<?php echo htmlspecialchars($stream['thumbnail_url']); ?>" 
+                             alt="<?php echo htmlspecialchars($stream['title']); ?>" 
+                             class="thumbnail"
+                             onerror="this.src='default-thumbnail.jpg';">
+                        <div class="noflex">
+                            <h3><?php echo htmlspecialchars($stream['title']); ?></h3>
+                            <div class="description">
+                                <?php echo htmlspecialchars($stream['description']); ?>
+                            </div>
+                            <div class="move-button">
+                                <a href="?category=<?php echo htmlspecialchars($category); ?>&video_id=<?php echo htmlspecialchars($stream['video_id']); ?>" 
+                                   class="watch-btn">Watch Now</a>
+                            </div>
                         </div>
                     </div>
-                </div>
-            <?php endforeach; ?>
-        <?php else: ?>
-            <p>No live streams available for <?php echo htmlspecialchars($category); ?> at the moment.</p>
-        <?php endif; ?>
-    </div>
+                <?php endforeach; ?>
+            <?php else: ?>
+                <p>No live streams available for <?php echo htmlspecialchars($category); ?> at the moment.</p>
+            <?php endif; ?>
+        </div>
+    <?php endif; ?>
+
     <div class="youtube-link">
         <p>You can visit YouTube for live chat and watch previous tournaments</p>
         <a href="https://www.youtube.com/channel/UCr14rNcua5zkxf2TUF0cCUA" target="_blank" class="visit-btn">Visit Now</a>
