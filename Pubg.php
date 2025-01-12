@@ -12,10 +12,10 @@
             include "HeaderWithProfile.php";
 
             // Database connection
-            $servername = "localhost"; // Change to your database server
-            $username = "root";        // Your database username
-            $password = "";            // Your database password
-            $dbname = "battlezonehub"; // Database name
+            $servername = "localhost";
+            $username = "root";
+            $password = "";
+            $dbname = "battlezonehub";
 
             // Create connection
             $conn = new mysqli($servername, $username, $password, $dbname);
@@ -25,7 +25,7 @@
                 die("Connection failed: " . $conn->connect_error);
             }
 
-            // Fetching data for FreeFire category
+            // Fetching PUBG room details
             $rooms = [];
             $sql = "SELECT room_id, room_password FROM room_details WHERE category = 'pubg'";
             $result = $conn->query($sql);
@@ -40,14 +40,14 @@
         ?>
         <div class="Body">
             <div class="BannerPUBG">
-                <img src="./ASSETS/pubg-background.png" alt="BannerFF">
+                <img src="./ASSETS/pubg-background.png" alt="BannerPUBG">
             </div>
             <div class="PUBG-main">
                 <img src="./ASSETS/home-pubg.png" alt="main-img">
-                <h1>PUBG : PlayerUnknown's Battlegrounds </h1>
+                <h1>PUBG : PlayerUnknown's Battlegrounds</h1>
             </div>
             <div class="properties">
-                <<div class="tournaments">
+                <div class="tournaments">
                     <a href="tournaments.php?category=pubg">
                         <img src="./ASSETS/TOURNAMENT.png" alt="tournaments">
                         <h1>Tournaments</h1>
@@ -60,9 +60,9 @@
                     </a>
                 </div>
                 <div class="Live">
-                    <a href="sharelive.php">
+                    <a href="sharelive.php?category=pubg"> <!-- Link to Live Stream Page -->
                         <img src="./ASSETS/YOUTUBE-LIVE.png" alt="live" style="width: 190px;">
-                        <h1 style="padding-bottom: 10px;">YouTube Live</h1>
+                        <h1 style="padding-bottom:20px;">YouTube Live</h1>
                     </a>
                 </div>
                 <div class="matches">
