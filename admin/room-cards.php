@@ -1,18 +1,5 @@
 <?php
-// Database configuration
-$servername = "localhost"; // Change to your database server
-$username = "root";        // Your database username
-$password = "";            // Your database password
-$dbname = "battlezonehub"; // Database name
-
-// Create connection
-$conn = new mysqli($servername, $username, $password, $dbname);
-
-// Check connection
-if ($conn->connect_error) {
-    die("Connection failed: " . $conn->connect_error);
-}
-
+include "../connection.php";
 // Handle form submission
 $message = "";
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
@@ -48,20 +35,6 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Room Details</title>
     <style>
-        /* General styling */
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            font-family: Arial, sans-serif;
-            background-color: #f4f4f9;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            height: 100vh;
-        }
         .room-card {
             background: #ffffff;
             padding: 20px 30px;

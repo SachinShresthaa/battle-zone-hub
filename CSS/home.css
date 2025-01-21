@@ -16,14 +16,15 @@
 }
 .Body {
     text-align: center;
-    padding: 45px;
+    padding: 0px;
     flex: 1;
-    margin: 20px;
+    margin: 0px;
 }
 
 .Body h2 {
     font-size: 52px;
     margin-bottom: 15px;
+    padding-top: 45px;
 }
 
 .Body p {
@@ -50,7 +51,7 @@
     text-decoration: none;
 }
 .future-games{
-    margin: 100px 0 0 250px;
+    margin: 40px 0 0 280px;
     width: 70%;
     height: 450px;
     display: flex;
@@ -62,9 +63,47 @@
     height: 100%;
     object-fit: cover;
     border-radius: 10px;
-    border: 2px solid white(255,255,255,0.6);
     transition: all ease-in-out 0.5s;
 }
 .future-games img:hover {
     width: 25%;
+}
+.dowm-content{
+    padding-top: 45px;
+    height:100%;
+    width: 100%;
+    background-color: #000000 ;
+}
+.box{
+    height:100%;
+    width: 100%;
+    background-color: black ;
+    display: block;
+    padding-top: 100px;
+    text-align: left;
+}
+.werinpubg{
+    padding-left: 200px;
+}
+.text{
+    padding-top: 50px;
+}
+p1{
+    font-size: 30px;
+    padding-bottom: 30px;
+}
+button{
+    font-size: 25px;
+    padding: 10px 30px;
+    background-color: red;
+    border: none;
+    margin:30px;
+    margin-left: 70px;
+}
+.werinpubg h1{
+    padding-top: 30px;
+}
+li{
+    font-size: 28px;
+    margin-left: 20px;
 }

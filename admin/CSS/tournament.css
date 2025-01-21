@@ -11,9 +11,17 @@
     flex-direction: column;
     justify-content: space-between;
     height: 100%;
-    max-width: 800px;
+    width: 100%;
     margin: 50px auto;
     color: white;
+}
+.upper-form{
+    width: 100%;
+    padding: 0px 450px;
+  }
+.fetch-data{
+width: 100%;
+padding: 100px 200px;
 }
 h2 {
     text-align: center;

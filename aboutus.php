@@ -2,77 +2,65 @@
 include "Header.php";
 ?>
 <style>
-    .about-us {
-    width: 100%;
-    padding: 70px 0;
+body {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Jacques Francois;
+    color: white;
+    background:black;
 }
 
-.about-us img {
-    height: auto;
-    width: 370px;
-    filter: drop-shadow(0 0 20px rgba(161, 182, 253, 0.825));
+.main-content {
+  padding: 40px 80px;
 }
 
-.about-us-text {
-    width: 800px;
+h2 {
+  color:rgb(255, 255, 255);
+  margin-bottom: 10px;
+  font-size: 35px;
 }
 
-.about-us-main {
-    margin: 0 90px;
-    display: flex;
-    align-items: center;
-    justify-content: space-around;
+p, li {
+  font-size: 22px;
+  margin-bottom: 10px;
 }
 
-.about-us h1 {
-    text-align: center;
-    font-size: 50px;
-    margin-bottom: 35px;
+ul {
+  list-style-type: disc;
+  padding-left: 20px;
 }
 
-.about-us h5 {
-    text-align: center;
-    font-size: 35px;
-    margin-top: 35px;
-    letter-spacing: 5px;
+.join {
+  margin-top: 20px;
 }
-
-.about-us-text p {
-    letter-spacing: 1px;
-    line-height: 35px;
-    font-size: 18px;
-    text-align: justify;
-    margin-bottom: 35px;
-}
-
 </style>
-<div class="about-us">
-    <h1>About Us</h1>
-    <div class="about-us-main">
-        <img src="Photos/about_us_image1.png" alt="">
-        <div class="about-us-text">
-            <p>Welcome to BattleZoneHub, your ultimate destination for immersive gaming experiences. We are dedicated to providing gamers with the best community-driven platform, offering a wide range of games, tournaments, and events.</p>
-        </div>
-    </div>
-    <div class="about-us-main">
-        <div class="about-us-text">
-            <p>Our goal is to make your gaming experience as smooth as possible. With instant digital delivery, secure
-                transactions, and a user-friendly interface, purchasing game codes from BattleZoneHub is quick, easy, and
-                reliable. We source all of our codes from trusted suppliers to ensure you get authentic and fully
-                activated game keys.</p>
-        </div>
-        <img src="Photos/about_us_image2.png" alt="">
-    </div>
-    <div class="about-us-main">
-        <img src="Photos/about_us_image3.png" alt="">
-        <div class="about-us-text">
-            <p>Thank you for choosing BattleZoneHub as your one-stop destination for PC game keys. Start your next adventure
-                today, and let the games begin.</p>
-        </div>
-    </div>
-    <h5>HAPPY GAMING!!</h5>
-</div>
+</head>
+<body>
+  <main class="main-content">
+      <h2>Our Mission</h2>
+      <p>
+        To create a seamless, fair, and exciting platform that empowers gamers to explore their potential, engage in intense competition, and celebrate the spirit of esports.
+      </p>
+      <h2>What We Offer</h2>
+      <ul>
+        <li>Inclusive Gaming Opportunities: Tournaments tailored for all levels.</li>
+        <li>Real-Time Rankings: Dynamic leaderboards showcasing top performers.</li>
+        <li>Live Streaming: Watch tournament action live with provided YouTube links.</li>
+        <li>User-Friendly Interface: Easy registration, match tracking, and progress updates.</li>
+      </ul>
+      <h2>Why Choose BattleZoneHub?</h2>
+      <p>
+        We are built for gamers, by gamers. Experience transparency, community focus, and dedicated support on a platform where you can compete, connect, and conquer.
+      </p>
 
+      <h2>Join Us Today!</h2>
+      <p>
+        Whether you’re a battle-hardened warrior or a rising star, BattleZoneHub is your gateway to esports glory. <strong>Level up with BattleZoneHub!</strong>
+      </p>
+  </main>
+</body>
+</html>
 <?php
 include "Footer.php";
 ?>

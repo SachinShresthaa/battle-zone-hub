@@ -76,7 +76,7 @@
                                 <p1>At BattleZoneHub, we’re here to help! Whether you have questions, feedback, or need assistance, feel free to reach out:</p1>
                                 <ul><br>
                                     <li><strong>Gmail:</strong> battlezonehub@gmail.com</li>
-                                    <li><strong>Phone:</strong> +1 800 123 4567</li>
+                                    <li><strong>Phone:</strong> +977 9869111467</li>
                                 </ul>
                                 <div style="display:flex;">
                                     <h1>Chat with us on discord</h1>

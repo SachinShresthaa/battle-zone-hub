@@ -2,34 +2,114 @@
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Jacques Francois;
+    font-family: 'Jacques Francois', sans-serif;
     color: white;
 }
 
-.Main {
-    background-color: #000000;
+body {
+    background-color: black;
+    font-size: 16px;
+}
+
+.main {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+}
+
+h1 {
+    font-size: 2.5rem;
     text-align: center;
+    margin-bottom: 20px;
+}
+
+.line {
+    height: 2px;
+    background-color: white;
+    margin: 10px 0;
+}
+
+.body {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 20px;
+    justify-content: center;
+}
+
+.box {
+    display: flex;
+    background-color: #1e1e1e;
+    border-radius: 8px;
+    overflow: hidden;
+    width: 100%;
+    max-width: 800px;
+    cursor: pointer;
+    transition: transform 0.3s;
+}
+
+.box:hover {
+    transform: scale(1.05);
+}
+
+.left-side img {
+    width: 200px;
+    height: 200px;
+    object-fit: cover;
+}
+
+.right-side {
+    flex: 1;
+    padding: 15px;
     display: flex;
     flex-direction: column;
     justify-content: space-between;
-    height: 100%;
 }
 
-.Body {
+.tournament-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+}
+
+.tournament-details {
+    font-size: 1rem;
+    margin-bottom: 5px;
+}
+
+.button-container {
     display: flex;
-    justify-content: space-around;
-    align-items: center;
-    padding:  0 px;
-    flex: 1;
+    gap: 10px;
+    margin-top: 10px;
 }
 
-.leftSide{
-    width: 700px;
-    height: 300px;
+.register-btn, .view-btn {
+    padding: 10px 20px;
+    font-size: 1rem;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    transition: background-color 0.3s;
 }
 
-.rightSide{
-    background-color: green;
-    width: 1000px;
-    height: 300px;
+.register-btn {
+    background-color: #007bff;
+    color: white;
+}
+
+.register-btn:hover {
+    background-color: #0056b3;
+}
+
+.view-btn {
+    background-color: #28a745;
+    color: white;
+}
+
+.view-btn:hover {
+    background-color: #1e7e34;
+}
+
+p {
+    font-size: 1.2rem;
+    text-align: center;
 }
