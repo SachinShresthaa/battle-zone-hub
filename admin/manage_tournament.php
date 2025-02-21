@@ -32,14 +32,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
         $date = $conn->real_escape_string($_POST['date']);
         $time = $conn->real_escape_string($_POST['time']);
         $registrationDeadline = $conn->real_escape_string($_POST['registration_deadline']);
+        $price = $conn->real_escape_string($_POST['price']);
+        $prize1st = $conn->real_escape_string($_POST['prize_1st']);
+        $prize2nd = $conn->real_escape_string($_POST['prize_2nd']);
 
         if ($action === 'add') {
-            $query = "INSERT INTO tournaments (name, category, date, time, registration_deadline, thumbnail) 
-                      VALUES ('$name', '$category', '$date', '$time', '$registrationDeadline', '$thumbnailPath')";
+            $query = "INSERT INTO tournaments (name, category, date, time, registration_deadline, thumbnail, price, prize_1st, prize_2nd) 
+                      VALUES ('$name', '$category', '$date', '$time', '$registrationDeadline', '$thumbnailPath', '$price', '$prize1st', '$prize2nd')";
         } elseif ($action === 'update' && isset($_POST['tournament_id'])) {
             $tournamentId = intval($_POST['tournament_id']);
             $query = "UPDATE tournaments 
-                      SET name='$name', category='$category', date='$date', time='$time', registration_deadline='$registrationDeadline'";
+                      SET name='$name', category='$category', date='$date', time='$time', registration_deadline='$registrationDeadline', price='$price', prize_1st='$prize1st', prize_2nd='$prize2nd'";
             if ($thumbnailPath) {
                 $query .= ", thumbnail='$thumbnailPath'";
             }
@@ -105,6 +108,18 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <input type="date" name="registration_deadline" min="<?php echo date('Y-m-d'); ?>" value="<?php echo $editTournament ? $editTournament['registration_deadline'] : ''; ?>" required>
                 </div>
                 <div class="form-group">
+                    <label>Entry Fee:</label>
+                    <input type="number" step="0.01" name="price" value="<?php echo $editTournament ? $editTournament['price'] : ''; ?>" required>
+                </div>
+                <div class="form-group">
+                    <label>Prize for 1st Place:</label>
+                    <input type="number" step="0.01" name="prize_1st" value="<?php echo $editTournament ? $editTournament['prize_1st'] : ''; ?>" required>
+                </div>
+                <div class="form-group">
+                    <label>Prize for 2nd Place:</label>
+                    <input type="number" step="0.01" name="prize_2nd" value="<?php echo $editTournament ? $editTournament['prize_2nd'] : ''; ?>" required>
+                </div>
+                <div class="form-group">
                     <label>Thumbnail:</label>
                     <?php if ($editTournament): ?>
                         <div class="current-files">
@@ -119,6 +134,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <?php endif; ?>
             </form>
         </div>
+
         <div class="fetch-data">
             <h2>Tournament List</h2>
             <table>
@@ -130,6 +146,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <th>Date</th>
                         <th>Time</th>
                         <th>Registration Deadline</th>
+                        <th>Entry Fee</th>
+                        <th>Prize for 1st Place</th>
+                        <th>Prize for 2nd Place</th>
                         <th>Thumbnail</th>
                         <th>Actions</th>
                     </tr>
@@ -146,6 +165,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td>{$row['date']}</td>
                             <td>{$row['time']}</td>
                             <td>{$row['registration_deadline']}</td>
+                            <td>{$row['price']}</td>
+                            <td>{$row['prize_1st']}</td>
+                            <td>{$row['prize_2nd']}</td>
                             <td><img src='{$row['thumbnail']}' alt='Thumbnail' class='current-files'></td>
                             <td>
                                 <a href='?edit={$row['id']}' class='btn'>Edit</a>
