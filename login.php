@@ -5,7 +5,14 @@ if (isset($_SESSION['error'])) {
     $error = $_SESSION['error']; 
     unset($_SESSION['error']); 
 }
+
+// Assuming that user authentication has been done correctly
+// Set session email after successful login
+if (isset($user_email)) {
+    $_SESSION['email'] = $user_email;  // Store the user email in session
+}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

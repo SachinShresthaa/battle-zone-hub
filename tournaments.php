@@ -1,15 +1,9 @@
 
 <?php 
-
 include "headerWithprofile.php";
-
-// Example: After fetching tournament details from the database
 $entryFee = isset($row['price']) ? htmlspecialchars($row['price']) : 'N/A';
-
-// Save the entry fee in the session
 $_SESSION['entry_fee'] = $entryFee;
 ?>
- 
 <!-- <?php include "Header.php"; ?> -->
 <!DOCTYPE html>
 <html lang="en">

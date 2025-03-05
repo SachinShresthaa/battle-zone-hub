@@ -29,12 +29,12 @@ require_once ("connection.php");
                         <h1>Tournaments</h1>
                     </a>
                 </div>
-                <div class="LeaderBoard">
-                    <a href="LeaderBoard.php">
-                        <img src="./ASSETS/Ranking.png" alt="LeaderBoard" style="width: 120px; height: 90px;">
-                        <h1>LeaderBoard</h1>
-                    </a>
-                </div>
+                    <div class="LeaderBoard">
+                        <a href="LeaderBoard.php">
+                            <img src="./ASSETS/Ranking.png" alt="LeaderBoard" style="width: 120px; height: 90px;">
+                            <h1>LeaderBoard</h1>
+                        </a>
+                    </div>
                 <div class="Live">
                     <a href="sharelive.php?category=freefire"> <!-- Filter to only show FreeFire -->
                         <img src="./ASSETS/YOUTUBE-LIVE.png" alt="live" style="width: 190px; " >
@@ -42,11 +42,12 @@ require_once ("connection.php");
                     </a>
                 </div>
                 <div class="matches">
-                    <a href="myMatches.php">
-                        <img src="./ASSETS/MATCHES.png" alt="MATCHES">
-                        <h1>My Matches</h1>
-                    </a>
-                </div>
+    <a href="myMatches.php?category=freefire">
+        <img src="./ASSETS/MATCHES.png" alt="MATCHES">
+        <h1>My Matches</h1>
+    </a>
+</div>
+
             </div>
         </div>
         <?php

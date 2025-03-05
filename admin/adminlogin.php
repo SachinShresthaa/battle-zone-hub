@@ -4,7 +4,6 @@ session_start();
 
 // Redirect if already logged in
 
-
 // Process login form submission
 $error_message = '';
 if (isset($_POST["login"])) {

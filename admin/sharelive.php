@@ -175,7 +175,7 @@ $conn->close();
                     </thead>
                     <tbody>
                         <?php foreach ($videos as $video): ?>
-                            <tr>
+                            <tr>s
                                 <td><img src="<?php echo htmlspecialchars($video['thumbnail_url']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>" width="120"></td>
                                 <td><?php echo htmlspecialchars($video['title']); ?></td>
                                 <td>

@@ -65,7 +65,7 @@
             <a href="">Privacy Policy</a>
         </div>
         <div class="Copyright">
-            <p>© 2024 BattleZoneHub Private Limited. All Rights Reserved.</p>
+            <p>© 2025 BattleZoneHub Private Limited. All Rights Reserved.</p>
         </div>
     </div>
 </body>

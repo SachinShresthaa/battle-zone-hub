@@ -75,12 +75,6 @@
     color: white;
     padding-bottom: 22px;
   }
-  .signup-link a {
-    text-decoration: underline;
-  }
-  .signup-link a:hover {
-    color: #db1818;
-  }
   .rightSideImage { 
     display: flex;
     justify-content: center;

@@ -2,7 +2,6 @@
 include "Header.php";
 require_once("connection.php");
 
-// Function to delete previous streams for the specific category
 function deletePreviousStreamsByCategory($conn, $category) {
     $sql = "DELETE FROM youtube_lives WHERE LOWER(category) = LOWER(?)";
     $stmt = $conn->prepare($sql);
@@ -67,10 +66,8 @@ if (isset($_POST['add_stream'])) {
 <body>
 <div class="container">
     <?php
-    // Display stream only if category is selected and stream exists
     if ($category && $stream) {
         if ($watch) {
-            // Show the live stream view when watch parameter is present
             ?>
             <div class="video-container">
                 <iframe 
@@ -90,7 +87,6 @@ if (isset($_POST['add_stream'])) {
             </div>
             <?php
         } else {
-            // Show the preview card when only category is selected
             ?>
             <div class="stream-card">
                 <img src="admin/<?php echo htmlspecialchars($stream['thumbnail_url']); ?>" 
@@ -111,7 +107,6 @@ if (isset($_POST['add_stream'])) {
         }
     } else {
         ?>
-        <!-- Display category selection -->
         <h2>Select a Category</h2>
         <div class="category-buttons">
             <a href="?category=PUBG" class="category-btn">PUBG</a>
@@ -121,7 +116,6 @@ if (isset($_POST['add_stream'])) {
     }
     ?>
 
-    <!-- Admin Section -->
     
 </div>
 </body>

@@ -41,7 +41,7 @@
                 </div>
             </div>
             <div class="status-item">
-                <h3 style="padding-bottom:10px;">Active<br>Tournaments</h3>
+                <h3 style="padding-bottom:10px;">Total<br>Tournaments</h3>
                 <div class="status-value">
                     <p><?php echo $total_tournaments; ?></p>
                 </div>

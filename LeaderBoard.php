@@ -1,223 +1,159 @@
+<?php
+session_start();
+include_once 'connection.php';
+include 'Header.php';
+
+// Fetch the latest tournament's ID
+$stmt = $conn->prepare("SELECT MAX(tournament_id) AS latest_tournament FROM ff_team_registration");
+$stmt->execute();
+$result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$latest_tournament_id = $row['latest_tournament'];
+$stmt->close();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Esports Leaderboard</title>
+    <title>Tournament Leaderboard</title>
     <style>
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            font-family: 'Jacques Francois', serif;
+            color: white;
         }
 
         body {
-            background-color: #f5f5f5;
-            padding: 20px;
+            background: black;
+            text-align: center;
         }
 
-        .leaderboard-container {
-            max-width: 1200px;
-            margin: 0 auto;
-            background: white;
-            border-radius: 12px;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        .container {
+            width: 85%;
+            margin: 20px auto;
+            padding: 20px;
+            border-radius: 10px;
+            padding-left: 250px;
+        }
+
+        .container h1 {
+            margin-bottom: 30px;
+            letter-spacing: 2px;
+            padding-right: 250px;
+        }
+
+        table {
+            width: 80%;
+            border-collapse: collapse;
+            background: #d4d2d2;
             overflow: hidden;
         }
 
-        .leaderboard-header {
-            padding: 20px;
-            background: #1a1a2e;
+        th, td {
+            padding: 15px;
+            color: black;
+            font-size: 18px;
+            border: 2px solid white;
+            text-align: center;
+        }
+
+        th {
+            background-color: #2E2E2E;
             color: white;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .title {
-            font-size: 24px;
+            text-transform: uppercase;
             font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 10px;
         }
 
-        .game-filters {
-            display: flex;
-            gap: 10px;
-        }
+        /* Styles for top 3 ranks */
+        .gold { background-color: gold; font-weight: bold; }
+        .silver { background-color: silver; font-weight: bold; }
+        .bronze { background-color: #cd7f32; font-weight: bold; }
 
-        .game-filter {
-            padding: 8px 16px;
-            border: none;
-            border-radius: 6px;
-            background: rgba(255, 255, 255, 0.1);
-            color: white;
-            cursor: pointer;
-            transition: background 0.3s;
-        }
-
-        .game-filter.active {
-            background: #4a90e2;
-        }
-
-        .game-filter:hover {
-            background: rgba(255, 255, 255, 0.2);
-        }
-
-        .leaderboard-table {
-            width: 100%;
-            border-collapse: collapse;
-        }
-
-        .leaderboard-table th {
-            background: #f8f9fa;
-            padding: 12px;
-            text-align: left;
-            font-weight: 600;
-            color: #444;
-            border-bottom: 2px solid #eee;
-        }
-
-        .leaderboard-table td {
-            padding: 16px 12px;
-            border-bottom: 1px solid #eee;
-        }
-
-        .player-info {
-            display: flex;
-            align-items: center;
-            gap: 12px;
-        }
-
-        .player-avatar {
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
-            background: #eee;
-        }
-
-        .player-details {
-            display: flex;
-            flex-direction: column;
-        }
-
-        .player-name {
-            font-weight: 600;
-            color: #333;
-        }
-
-        .player-game {
-            font-size: 14px;
-            color: #666;
-        }
-
-        .rank {
-            font-weight: bold;
-            display: flex;
-            align-items: center;
-            gap: 8px;
-        }
-
-        .top-rank {
-            color: #ffd700;
-        }
-
-        .rank-change {
-            font-size: 14px;
-            display: flex;
-            align-items: center;
-            gap: 4px;
-        }
-
-        .rank-up {
-            color: #2ecc71;
-        }
-
-        .rank-down {
-            color: #e74c3c;
-        }
-
-        .win-streak {
-            display: flex;
-            align-items: center;
-            gap: 4px;
-            color: #ff6b6b;
-            font-weight: 600;
+        tr:hover {
+            background-color: #787878;
         }
 
         @media (max-width: 768px) {
-            .game-filters {
-                display: none;
+            .container {
+                width: 95%;
             }
-            
-            .leaderboard-table th:nth-child(3),
-            .leaderboard-table td:nth-child(3),
-            .leaderboard-table th:nth-child(5),
-            .leaderboard-table td:nth-child(5) {
-                display: none;
+
+            table {
+                font-size: 14px;
             }
         }
     </style>
 </head>
 <body>
-    <div class="leaderboard-container">
-        <div class="leaderboard-header">
-            <div class="title">
-                Pro Players Leaderboard
-            </div>
-        </div>
-        
-        <table class="leaderboard-table">
-            <thead>
+
+<div class="container">
+    <h1>Tournament Leaderboard</h1>
+
+    <?php
+    function formatRank($rank) {
+        if ($rank == 1) {
+            return "🥇"; // Gold medal
+        } elseif ($rank == 2) {
+            return "🥈"; // Silver medal
+        } elseif ($rank == 3) {
+            return "🥉"; // Bronze medal
+        } elseif ($rank % 100 >= 11 && $rank % 100 <= 13) {
+            return $rank . "th";
+        }
+        switch ($rank % 10) {
+            case 1: return $rank . "st";
+            case 2: return $rank . "nd";
+            case 3: return $rank . "rd";
+            default: return $rank . "th";
+        }
+    }
+
+    if ($latest_tournament_id) {
+        echo "<table>
                 <tr>
-                    <th>Position</th>
-                    <th>Team</th>
-                    <th>Score</th>
-                    
-                </tr>
-            </thead>
-            <tbody>
-                <tr>
-                    <td>
-                        <div class="rank top-rank">
-                            #1
-                            <span class="rank-change rank-up">↑</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="player-info">
-                            <div class="player-avatar"></div>
-                        </div>
-                    </td>
-                    <td>Team Liquid</td>
-                    <td>2,850</td>
-                    <td>
-                      
-                    </td>
-                </tr>
-                <!-- More rows following the same pattern -->
-                <tr>
-                    <td>
-                        <div class="rank top-rank">
-                            #2
-                            <span class="rank-change rank-down">↓</span>
-                        </div>
-                    </td>
-                    <td>
-                        <div class="player-info">
-                            <div class="player-avatar"></div>
-                        </div>
-                    </td>
-                    <td>Cloud9</td>
-                    <td>2,780</td>
-                    <td>
-                   
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+                    <th>Rank</th>
+                    <th>Team Name</th>
+                    <th>Total Kills</th>
+                    <th>Total Points</th>
+                </tr>";
+
+        $stmt = $conn->prepare("SELECT team_name, kills, points 
+                                FROM ff_team_registration 
+                                WHERE tournament_id = ? 
+                                ORDER BY points DESC, kills DESC");
+        $stmt->bind_param("i", $latest_tournament_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        $rank = 1;
+        while ($team = $result->fetch_assoc()) {
+            // Assign classes based on rank
+            $rowClass = ($rank == 1) ? "gold" : (($rank == 2) ? "silver" : (($rank == 3) ? "bronze" : ""));
+
+            echo "<tr class='$rowClass'>
+                    <td>" . formatRank($rank) . "</td>
+                    <td>{$team['team_name']}</td>
+                    <td>{$team['kills']}</td>
+                    <td>{$team['points']}</td>
+                  </tr>";
+            $rank++;
+        }
+        echo "</table>";
+    } else {
+        echo "<p>No tournaments found.</p>";
+    }
+
+    $conn->close();
+    ?>
+</div>
+
 </body>
 </html>
+<div style="height:300px;"></div>
+<?php
+include 'Footer.php';
+?>

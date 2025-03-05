@@ -2,14 +2,43 @@
 session_start();
 include 'connection.php';
 
+// Check if the user is logged in by verifying session variables
+if (isset($_SESSION['user_id'])) {
+    $user_id = $_SESSION['user_id'];
+    
+    // Fetch the user's full name and email from the database
+    $query = "SELECT fullname, email FROM users WHERE id = ?";
+    $stmt = $conn->prepare($query);
+    $stmt->bind_param("i", $user_id);
+    $stmt->execute();
+    $stmt->bind_result($user_full_name, $user_email);
+    $stmt->fetch();
+    $stmt->close();
+
+    // Ensure the full name and email are set in session if not already
+    if (!isset($_SESSION['fullname']) && isset($user_full_name)) {
+        $_SESSION['fullname'] = $user_full_name;
+    }
+    if (!isset($_SESSION['user_email']) && isset($user_email)) {
+        $_SESSION['user_email'] = $user_email;
+    }
+} else {
+    // Redirect to login page if user is not logged in
+    header("Location: login.php");
+    exit();
+}
+
+// Handle account deletion
 if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
-    $user_id = $_SESSION['user_id']; 
+    $user_id = $_SESSION['user_id'];
+
+    // Prepare the query to delete the account
     $delete_query = "DELETE FROM users WHERE id = ?";
     $stmt = $conn->prepare($delete_query);
     $stmt->bind_param("i", $user_id);
 
     if ($stmt->execute()) {
-        session_destroy();
+        session_destroy();  // Destroy the session after account deletion
         header("Location: firstUi.php");
         exit();
     } else {
@@ -17,6 +46,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -32,7 +62,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
 
         .Heading {
             background-color: #2E2E2E;
-            padding: 30px 60px;
+            padding: 20px 60px;
             display: flex;
             justify-content: space-between;
             align-items: center;
@@ -82,9 +112,11 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
             padding-left: 20px;
             color: black;
         }
-        .edit-option{
-            border: 2px solidrgb(166, 164, 164);
+
+        .edit-option {
+            border: 2px solid rgb(166, 164, 164);
         }
+
         .dropdown-content {
             border: 2px solid #ddd;
             display: none;
@@ -100,9 +132,10 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
         .submenu {
             margin-left: 20px;
             display: none;
-            background-color:rgb(246, 160, 160);
+            background-color: rgb(246, 160, 160);
             border: 2px solid gray;
         }
+
         .show {
             display: block;
         }
@@ -172,7 +205,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
                         <input type="file" id="image-upload" name="profile_image" accept="image/*" style="display: none;">
                         <div class="overlay" onclick="document.getElementById('image-upload').click();"></div>
                     </div>
-                    <span><?php echo ($_SESSION['fullname']) ?></span>
+                    <span style="color: black;"><?php echo ($_SESSION['fullname']); ?></span>
                 </div>
                 <div class="edit-option">
                     <div class="dropdown-item" onclick="toggleSubmenu('submenu-settings')">
@@ -181,7 +214,7 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
                     </div>
                     <div id="submenu-settings" class="submenu">
                         <form method="POST" id="deleteAccountForm" style="margin: 0;">
-                            <a  class="dropdown-item" onclick="confirmDelete()"><span>Delete Account?</span></a>
+                            <a class="dropdown-item" onclick="confirmDelete()"><span>Delete Account?</span></a>
                             <input type="hidden" name="delete_account" value="1">
                         </form>
                     </div>
@@ -193,14 +226,17 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
             </div>
         </div>
     </div>
+
     <script>
         function toggleDropdown() {
             document.getElementById("myDropdown").classList.toggle("show");
         }
+
         function toggleSubmenu(submenuId) {
             const submenu = document.getElementById(submenuId);
             submenu.classList.toggle("show");
         }
+
         function confirmDelete() {
             if (confirm("Are you sure you want to delete your account?")) {
                 document.getElementById('deleteAccountForm').submit();

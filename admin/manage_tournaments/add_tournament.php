@@ -41,12 +41,17 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                       VALUES ('$name', '$category', '$date', '$time', '$registrationDeadline', '$thumbnailPath', '$price', '$prize1st', '$prize2nd')";
         } elseif ($action === 'update' && isset($_POST['tournament_id'])) {
             $tournamentId = intval($_POST['tournament_id']);
-            $query = "UPDATE tournaments 
-                      SET name='$name', category='$category', date='$date', time='$time', registration_deadline='$registrationDeadline', price='$price', prize_1st='$prize1st', prize_2nd='$prize2nd'";
-            if ($thumbnailPath) {
-                $query .= ", thumbnail='$thumbnailPath'";
+
+            // If no new thumbnail is uploaded, keep the existing one
+            if (!$thumbnailPath && $editTournament) {
+                $thumbnailPath = $editTournament['thumbnail'];
             }
-            $query .= " WHERE id=$tournamentId";
+
+            $query = "UPDATE tournaments 
+                      SET name='$name', category='$category', date='$date', time='$time', 
+                          registration_deadline='$registrationDeadline', price='$price', 
+                          prize_1st='$prize1st', prize_2nd='$prize2nd', thumbnail='$thumbnailPath'
+                      WHERE id=$tournamentId";
         }
     } elseif ($action === 'delete' && isset($_POST['tournament_id'])) {
         $tournamentId = intval($_POST['tournament_id']);
@@ -123,10 +128,10 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                     <label>Thumbnail:</label>
                     <?php if ($editTournament): ?>
                         <div class="current-files">
-                            Current: <img src="<?php echo $editTournament['thumbnail']; ?>" alt="Thumbnail">
+                            Current: <img src="<?php echo $editTournament['thumbnail']; ?>" alt="Thumbnail" width="100">
                         </div>
                     <?php endif; ?>
-                    <input type="file" name="thumbnail" accept="image/*" <?php echo $editTournament ? '' : 'required'; ?>>
+                    <input type="file" name="thumbnail" accept="image/*">
                 </div>
                 <button type="submit" class="btn"><?php echo $editTournament ? 'Update' : 'Add'; ?> Tournament</button>
                 <?php if ($editTournament): ?>
@@ -147,16 +152,15 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                         <th>Time</th>
                         <th>Registration Deadline</th>
                         <th>Entry Fee</th>
-                        <th>Prize for 1st Place</th>
-                        <th>Prize for 2nd Place</th>
+                        <th>Prize 1st</th>
+                        <th>Prize 2nd</th>
                         <th>Thumbnail</th>
                         <th>Actions</th>
                     </tr>
                 </thead>
                 <tbody>
                     <?php
-                    $query = "SELECT * FROM tournaments ORDER BY date DESC, time DESC";
-                    $result = $conn->query($query);
+                    $result = $conn->query("SELECT * FROM tournaments ORDER BY date DESC");
                     while ($row = $result->fetch_assoc()) {
                         echo "<tr>
                             <td>{$row['id']}</td>
@@ -168,13 +172,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td>{$row['price']}</td>
                             <td>{$row['prize_1st']}</td>
                             <td>{$row['prize_2nd']}</td>
-                            <td><img src='{$row['thumbnail']}' alt='Thumbnail' class='current-files'></td>
+                            <td><img src='{$row['thumbnail']}' width='50'></td>
                             <td>
-                                <a href='?edit={$row['id']}' class='btn'>Edit</a>
-                                <form method='POST' style='display:inline;'>
+                                <a href='edit.php?edit={$row['id']}' class='btn'>Edit</a>
+                                <form action='' method='POST' style='display:inline;'>
                                     <input type='hidden' name='action' value='delete'>
                                     <input type='hidden' name='tournament_id' value='{$row['id']}'>
-                                    <button type='submit' class='delete-btn' onclick='return confirm(\"Are you sure?\");'>Delete</button>
+                                    <button type='submit' class='btn' onclick='return confirm(\"Are you sure you want to delete this tournament?\")'>Delete</button>
                                 </form>
                             </td>
                         </tr>";

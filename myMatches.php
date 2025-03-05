@@ -1,185 +1,183 @@
-<?php include "Header.php"; ?>
+<?php
+include 'connection.php';
+include "headerwithprofile.php";
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit();
+}
+
+$user_id = $_SESSION['user_id'];
+$category = isset($_GET['category']) ? $_GET['category'] : 'pubg';
+
+if ($category == 'pubg') {
+    $query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail
+              FROM pubg_team_registration r
+              INNER JOIN tournaments t ON r.tournament_id = t.id
+              WHERE r.user_id = ?
+              ORDER BY t.date DESC
+              LIMIT 1";
+} else {
+    $query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail
+              FROM ff_team_registration r
+              INNER JOIN tournaments t ON r.tournament_id = t.id
+              WHERE r.user_id = ?
+              ORDER BY t.date DESC
+              LIMIT 1";
+}
+
+$stmt = $conn->prepare($query);
+$stmt->bind_param("i", $user_id);
+$stmt->execute();
+$result = $stmt->get_result();
+?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Matches</title>
-    <link rel="stylesheet" href="css/matches.css">
-    <script>
-        function handleMatchClick(matchId) {
-            alert("Clicked on Match ID: " + matchId);
-        }
-        
-        function handleJoinClick(matchId, event) {
-            event.stopPropagation();
-            alert("Joined Match ID: " + matchId);
-        }
-        
-        function handleDetailsClick(matchId, event) {
-            event.stopPropagation();
-            alert("Viewing details for Match ID: " + matchId);
-        }
-    </script>
+    <title>My Matches</title>
     <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Jacques Francois;
+            color: white;
+        }
+
+        body {
+            background-color: black;
+        }
+        h2 {
+            font-size: 36px;
+            margin-bottom: 30px;
+            margin-top: 50px;
+            padding-left: 75px;
+        }
+
+        /* Tournament Section */
+        .container {
+            padding-left: 500px;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+        }
+
+        /* Tournament Card */
+        .card {
+            display: flex;
+            align-items: flex-start;
+            background: #2E2E2E;
+            border: 1px solid rgb(82, 80, 80);
+            border-radius: 8px;
+            overflow: hidden;
+            width: 100%;
+            max-width: 700px;
+        }
+
+        /* Left Side Image */
         .leftSide {
-            width: 200px;
-            height: 200px;
-            min-width: 200px;
+            width: 350px;
+            height: 220px;
             overflow: hidden;
             border-radius: 8px;
-            margin-right: 20px;
-            background-color: #f5f5f5;
+            background-color: #1c1c1c;
             display: flex;
             align-items: center;
             justify-content: center;
+            padding: 5px;
         }
 
         .leftSide img {
             width: 100%;
             height: 100%;
             object-fit: cover;
-            transition: transform 0.3s ease;
         }
 
-        .box:hover .leftSide img {
-            transform: scale(1.05);
+        /* Right Side Content */
+        .rightSide {
+            padding: 20px;
+            flex: 1;
+            text-align: left;
         }
 
-        .match-status {
-            padding: 5px 10px;
-            border-radius: 4px;
+        .tournament-name {
+            font-size: 30px;
             font-weight: bold;
+            color: red;
+            margin-bottom: 10px;
+        }
+
+        .info-group {
+            font-size: 20px;
+            margin-bottom: 8px;
+        }
+
+        /* Button Styles */
+        .btn {
+            margin-top: 15px;
+        }
+
+        .btn {
             display: inline-block;
-            margin-top: 5px;
+            padding: 10px 18px;
+            font-size: 20px;
+            color: white;
+            background: #ff0000;
+            border: none;
+            border-radius: 4px;
+            text-decoration: none;
+            cursor: pointer;
+            margin-right: 10px;
+            transition: background-color 0.3s ease;
         }
 
-        .status-upcoming {
-            background-color: #e3f2fd;
-            color: #1976d2;
-        }
-
-        .status-live {
-            background-color: #e8f5e9;
-            color: #2e7d32;
-            animation: pulse 2s infinite;
-        }
-
-        .status-completed {
-            background-color: #f5f5f5;
-            color: #616161;
-        }
-
-        @keyframes pulse {
-            0% { opacity: 1; }
-            50% { opacity: 0.6; }
-            100% { opacity: 1; }
+        .btn:hover {
+            background-color: #aa0303;
         }
     </style>
 </head>
 <body>
-    <div class="Main">
-        <?php
-        // Get the game category from URL parameter
-        $category = isset($_GET['category']) ? $_GET['category'] : '';
+    <div class="container">
+        <h2>My Registered Tournament for <?php echo ucfirst($category); ?></h2>
         
-        // Set the title based on category
-        $title = $category ? ucfirst($category) . ' Matches' : 'All Matches';
-        ?>
-        
-        <h1><?php echo htmlspecialchars($title); ?></h1>
-        <div class="line"></div>
-        
-        <div class="Body">
-            <?php
-            // Include database connection
-            include_once 'connection.php';
-            
-            function validateImagePath($path) {
-                $path = str_replace('../', '', $path);
-                if (empty($path) || !file_exists($path)) {
-                    return 'uploads/default-match-image.jpg';
-                }
-                return $path;
-            }
-
-            // Get current timestamp for comparing match status
-            $currentTime = date('Y-m-d H:i:s');
-
-            // Prepare the query based on category
-            $query = "SELECT * FROM matches";
-            if ($category) {
-                $category = $conn->real_escape_string($category);
-                $query .= " WHERE LOWER(category) = LOWER('$category')";
-            }
-            $query .= " ORDER BY match_date ASC, match_time ASC";
-            
-            $result = $conn->query($query);
-            
-            if ($result && $result->num_rows > 0) {
-                while ($row = $result->fetch_assoc()) {
-                    // Validate and clean up image path
-                    $imagePath = validateImagePath($row['match_thumbnail']);
+        <?php if ($row = $result->fetch_assoc()): ?>
+            <div class="card">
+                <div class='leftSide'>
+                    <img src="assets/<?php echo htmlspecialchars($row['thumbnail']); ?>" 
+                        alt="Tournament Thumbnail" 
+                        class="card-image">
+                </div>
+                <div class='rightSide'>
+                    <div class="tournament-name">
+                        <?php echo htmlspecialchars($row['tournament_name']); ?>
+                    </div>
                     
-                    // Calculate match status
-                    $matchDateTime = $row['match_date'] . ' ' . $row['match_time'];
-                    $matchEndTime = date('Y-m-d H:i:s', strtotime($matchDateTime . ' +2 hours')); // Assuming 2-hour matches
+                    <div class="info-group">
+                        <div class="info-label">Date: <?php echo htmlspecialchars($row['date']); ?></div>
+                    </div>
                     
-                    if (strtotime($currentTime) < strtotime($matchDateTime)) {
-                        $status = 'upcoming';
-                        $statusText = 'Upcoming';
-                    } elseif (strtotime($currentTime) > strtotime($matchEndTime)) {
-                        $status = 'completed';
-                        $statusText = 'Completed';
-                    } else {
-                        $status = 'live';
-                        $statusText = 'LIVE';
-                    }
+                    <div class="info-group">
+                        <div class="info-label">Time: <?php echo htmlspecialchars($row['time']); ?></div>
+                    </div>
                     
-                    echo "
-                    <div class='box' onclick='handleMatchClick({$row['id']})'>
-                        <div class='leftSide'>
-                            <img src='" . htmlspecialchars($imagePath) . "' 
-                                 alt='Match Thumbnail'
-                                 onerror=\"this.src='uploads/default-match-image.jpg'\">
-                        </div>
-                        <div class='rightSide'>
-                            <div class='match-title'>" . htmlspecialchars($row['match_name']) . "</div>
-                            <div class='match-details'>Category: " . htmlspecialchars($row['category']) . "</div>
-                            <div class='match-details'>Date: " . date("F j, Y", strtotime($row['match_date'])) . "</div>
-                            <div class='match-details'>Time: " . date("g:i A", strtotime($row['match_time'])) . "</div>
-                            <div class='match-details'>Prize Pool: $" . number_format($row['prize_pool'], 2) . "</div>
-                            <div class='match-status status-{$status}'>{$statusText}</div>
-                            <div class='button-container'>";
-
-                    if ($status === 'upcoming') {
-                        if (strtolower($row['category']) == 'pubg') {
-                            echo "<a href='joinmatchpubg.php?match_id={$row['id']}'>
-                                    <button class='join-btn'>Join Match</button>
-                                  </a>";
-                        } elseif (strtolower($row['category']) == 'freefire') {
-                            echo "<a href='joinmatchff.php?match_id={$row['id']}'>
-                                    <button class='join-btn'>Join Match</button>
-                                  </a>";
-                        } else {
-                            echo "<button class='join-btn' onclick='handleJoinClick({$row['id']}, event)'>Join Match</button>";
-                        }
-                    } elseif ($status === 'live') {
-                        echo "<button class='watch-btn' onclick='window.location.href=\"watch.php?match_id={$row['id']}\"'>Watch Live</button>";
-                    }
-
-                    echo "
-                                <button class='view-btn' onclick='handleDetailsClick({$row['id']}, event)'>View Details</button>
-                            </div>
-                        </div>
-                    </div>";
-                }
-            } else {
-                echo "<p>No " . ($category ? htmlspecialchars($category) . " " : "") . "matches are currently available.</p>";
-            }
-            ?>
-        </div>
+                    <div class="button-group">
+                        <a href="viewDetails.php" class="btn btn-details">View Details</a>
+                        <?php if ($category == 'freefire'): ?>
+                            <a href="userviewRoomCard.php" class="btn btn-room">Get Room</a>
+                        <?php else: ?>
+                            <a href="pubggetRoom.php" class="btn btn-room">Get Room</a>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </div>
+        <?php else: ?>
+            <div class="no-matches">
+                No registered tournaments found for <?php echo ucfirst($category); ?>.
+            </div>
+        <?php endif; ?>
     </div>
 </body>
 </html>
-<?php include "Footer.php"; ?>

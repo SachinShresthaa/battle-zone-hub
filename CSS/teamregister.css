@@ -38,7 +38,7 @@ h1 {
     padding-left: 50px;
 }
 
-form {
+.right-side form {
     display: flex;
     flex-direction: column;
     padding: 30px;
@@ -55,7 +55,7 @@ label {
 }
 
 input {
-    width: 80%;
+    width: 84%;
     background-color: #2E2E2E;
     color: white;
     border: 1px solid #444444;
@@ -70,8 +70,9 @@ input {
     padding-top: 10px;
     flex-direction: column;
 }
-.team-members > input{
+.team-members  input{
     border-radius: 1px;
+    width: 42%;
 }
 
 .note {
@@ -95,6 +96,6 @@ button {
     width: 85%;
 }
 
-button:hover {
+.change button:hover {
     background-color: green;
 }

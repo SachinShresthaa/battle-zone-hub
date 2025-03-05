@@ -74,7 +74,7 @@
         }
 
         if (isset($_GET['tournaments'])) {
-            include 'manage_tournament.php';
+            include 'manage_tournaments/manage_tournament.php';
         }
 
         if (isset($_GET['room-cards'])) {
@@ -82,7 +82,7 @@
         }
 
         if (isset($_GET['leaderboard'])) {
-            include 'leaderboard.php';
+            include 'manage_leaderboard/manage_leaderBoard.php';
         }
 
         if (isset($_GET['sharelive'])) {
