@@ -1,0 +1,121 @@
+ * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: Jacques Francois, serif;
+            color: white;
+        }
+
+        .head > h1 {
+            text-align: center;
+            margin: 20px 0;
+            color: white;
+            letter-spacing: 2px;
+        }
+
+        /* Main Container */
+        .Main {
+            width: 85%;
+            margin: 0 auto;
+            background: black;
+            overflow: hidden;
+            padding: 20px;
+            margin-top: 20px;
+        }
+
+        /* Table Styles */
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 20px 0;
+            background: #d4d2d2;
+        }
+
+        th, td {
+            padding: 15px;
+            color: black;
+            font-size: 20px;
+            border: 2px solid white;
+        }
+
+        th {
+            background-color: #2E2E2E;
+            color: white;
+            font-size: 20px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
+
+        tr:hover {
+            background-color: #787878;
+        }
+
+        a {
+            text-decoration: none;
+            color: #f44336;
+        }
+
+        a:hover {
+            color: #ff0000;
+        }
+
+        p {
+            text-align: center;
+            font-size: 25px;
+            color: rgb(255, 255, 255);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .Main {
+                width: 95%;
+            }
+
+            table {
+                font-size: 14px;
+            }
+        }
+
+        /* Modal styles */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            overflow: auto;
+            background-color: rgb(0, 0, 0);
+            background-color: rgba(0, 0, 0, 0.4);
+            padding-top: 60px;
+        }
+
+        .modal-content {
+            background-color: #fefefe;
+            margin: 5% auto;
+            padding: 20px;
+            border: 1px solid #888;
+            width: 80%;
+            max-width: 500px;
+        }
+
+        .close-btn {
+            color: #aaa;
+            font-size: 28px;
+            font-weight: bold;
+            position: absolute;
+            right: 10px;
+            top: 5px;
+        }
+
+        .close-btn:hover,
+        .close-btn:focus {
+            color: black;
+            text-decoration: none;
+            cursor: pointer;
+        }
+
+        .form-actions button {
+            margin: 5px;
+        }

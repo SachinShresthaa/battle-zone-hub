@@ -1,0 +1,121 @@
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:Jacques Francois ;
+}
+
+body {
+    background: black;
+    min-height: 100vh;
+    color: #fff;
+}
+
+.nav-container {
+    width: 100%;
+    background: black;
+    backdrop-filter: blur(10px);
+    display: flex;
+    justify-content: center;
+    padding: 20px 0;
+    position: sticky;
+    top: 0;
+    box-shadow: black;
+}
+
+.nav-item {
+    padding: 15px 30px;
+    color: #fff;
+    cursor: pointer;
+    border: none;
+    background: none;
+    font-size: 25px;
+    position: relative;
+    margin: 0 10px;
+    transition: all 0.3s ease;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    font-weight: bold;
+}
+
+.nav-item::before {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 3px;
+    background: #d4d2d2;
+    transform: scaleX(0);
+    transition: transform 0.3s ease;
+}
+
+.nav-item.active {
+    color: #4ecdc4;
+    transform: translateY(-2px);
+}
+
+.nav-item.active::before {
+    transform: scaleX(1);
+    height: 4px;
+}
+
+.content-container {
+    padding: 40px;
+    min-height: 400px;
+    max-width: 1200px;
+    margin: 20px auto;
+    background: #2E2E2E;
+    border-radius: 20px;
+    backdrop-filter: blur(5px);
+}
+.content-section {
+    display: none;
+    opacity: 0;
+    transform: translateY(20px);
+    transition: all 0.5s ease;
+}
+.content-section h2{
+    text-align: center;
+}
+.content-section.active {
+    display: block;
+    opacity: 1;
+    transform: translateY(0);
+}
+
+h2 {
+    font-size: 30px;
+    margin-bottom: 20px;
+    background:  #4ecdc4;
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    position: relative;
+}
+
+h2::after {
+    content: '';
+    position: absolute;
+    bottom: -10px;
+    left: 0;
+    width: 100%;
+    height: 4px;
+    background: #d4d2d2;
+    border-radius: 2px;
+}
+/* Add some hover effects to content sections */
+.content-section {
+    position: relative;
+    overflow: hidden;
+}
+
+@keyframes shine {
+    0% {
+        top: -100%;
+        left: -100%;
+    }
+    100% {
+        top: 100%;
+        left: 100%;
+    }
+}
