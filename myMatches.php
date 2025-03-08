@@ -1,6 +1,11 @@
 <?php
+// Start output buffering
+ob_start();
+
+// Start the session
+session_start();
+
 include 'connection.php';
-include "headerwithprofile.php";
 
 // Check for user session and redirect if not logged in
 if (!isset($_SESSION['user_id'])) {
@@ -21,14 +26,17 @@ if (isset($_GET['cancel_match']) && isset($_GET['tournament_id'])) {
 
     if ($delete_stmt->execute()) {
         $_SESSION['message'] = "Match registration canceled successfully.";
-        header("Location: viewDetails.php" . $_SERVER['REQUEST_URI']); // Redirect to the same page
-        exit();
     } else {
         $_SESSION['error'] = "Error canceling match registration. Please try again.";
-        header("Location: myMatches.php" . $_SERVER['REQUEST_URI']); // Redirect to the same page
-        exit();
     }
+
+    // Redirect back to the same page
+    header("Location: myMatches.php?category=freefire");
+    exit();
 }
+
+// Include headerWithProfile.php after handling headers
+include "headerwithprofile.php";
 
 // Fetch the latest registered tournament for the user (for Free Fire)
 $query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail, t.id AS tournament_id
@@ -70,7 +78,7 @@ $result = $stmt->get_result();
         // Confirmation popup before match cancellation
         function confirmCancel(tournamentId) {
             if (confirm("Are you sure you want to cancel this match?")) {
-                window.location.href = "http://localhost/battle-zone-hub/myMatches.php?category=freefire&cancel_match=true&tournament_id=" + tournamentId;
+                window.location.href = "myMatches.php?category=freefire&cancel_match=true&tournament_id=" + tournamentId;
             }
         }
     </script>

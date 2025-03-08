@@ -149,8 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
     <!-- Success Message Popup and Redirect to Khalti Checkout -->
     <?php if (!empty($successMessage)) { ?>
         <script type="text/javascript">
-            alert("<?php echo $successMessage; ?>");
-            window.location.href = "payment.php?tournament_id=<?php echo $tournament_id; ?>&entry_fee=<?php echo urlencode($entryFee); ?>";
+            window.location.href = "khalti/checkout.php?tournament_id=<?php echo $tournament_id; ?>&entry_fee=<?php echo urlencode($entryFee); ?>";
         </script>
     <?php } ?>
 

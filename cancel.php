@@ -42,5 +42,5 @@ if (isset($_GET['cancel_match']) && isset($_GET['tournament_id'])) {
 }
 
 // Redirect back to my_matches.php with the selected category
-header("Location: myMatches.php?category=" . $category);
+header("Location: myMatches.php?category=" . urlencode($category));
 exit();

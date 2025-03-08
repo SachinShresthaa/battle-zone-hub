@@ -21,9 +21,9 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 
     // Check if deletion was successful
     if ($stmt->affected_rows > 0) {
-        echo "<script>alert('Team \"$team_name\" deleted successfully!'); window.location.href='index.php';</script>";
+        echo "<script>alert('Team \"$team_name\" deleted successfully!'); window.location.href='../index.php?tournaments';</script>";
     } else {
-        echo "<script>alert('Error: Team not found or already deleted.'); window.location.href='index.php';</script>";
+        echo "<script>alert('Error: Team not found or already deleted.'); window.location.href='../index.php?tournaments';</script>";
     }
 
     $stmt->close();
