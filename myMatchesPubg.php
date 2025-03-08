@@ -111,7 +111,7 @@ $result = $stmt->get_result();
                     </div>
                     
                     <div class="button-group">
-                        <a href="userviewRoomCard.php" class="btn btn-room">Get Room</a>
+                        <a href="pubggetRoom.php" class="btn btn-room">Get Room</a>
                         <a href="javascript:void(0);" class="btn cancel-btn" onclick="confirmCancel(<?php echo $row['tournament_id']; ?>)">Cancel Match</a>
                     </div>
                 </div>
