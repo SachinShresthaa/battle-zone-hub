@@ -1,6 +1,32 @@
 <?php
-session_start();
-include 'connection.php';
+
+if(session_status() != PHP_SESSION_ACTIVE){
+    session_start();
+}
+
+    include 'connection.php';
+    $isAdminPage = false;
+    $uri = $_SERVER['REQUEST_URI'];
+    if (strpos($uri, '/admin') === 0) {
+      $isAdminPage = true;
+    }
+$isAdminUser = false;
+if (isset($_SESSION['user_id'])) {  
+    $user_id = $_SESSION['user_id'];
+    $sql="SELECT * FROM users WHERE id='$user_id'";
+    $result=mysqli_query($conn,$sql);
+    if(mysqli_num_rows($result)>0){
+        $user =mysqli_fetch_assoc($result);
+        if($user['isadmin'] == 1){
+            $isAdminUser = true;
+        }else {
+            if(!$isAdminPage){
+                header("Location:../unauthorized.html");
+                echo "Unauthorized";    
+            }
+        }
+    }
+}
 
 // Check if the user is logged in by verifying session variables
 if (isset($_SESSION['user_id'])) {
@@ -208,6 +234,12 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
                     <span style="color: black;"><?php echo ($_SESSION['fullname']); ?></span>
                 </div>
                 <div class="edit-option">
+                    <?php if($isAdminUser == true){ ?>
+                    <div class="admin-panel">
+                        <a href="./admin"><h4>Admin Panel<h4></a>
+                    </div>  
+                    <?php } ?>
+
                     <div class="dropdown-item" onclick="toggleSubmenu('submenu-settings')">
                         <img src="./assets/setting.png" alt="" class="logo">
                         <span>Settings</span>

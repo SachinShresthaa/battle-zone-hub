@@ -16,7 +16,7 @@ $_SESSION['user_id']=$user['id'];
 $_SESSION['email']=$user['email'];
 $_SESSION['fullname']=$user['Fullname'];
 $_SESSION['logged_in']=true;
-header("Location:home.php");
+header("Location:index.php");
 exit();
     }
     else {

@@ -1,5 +1,8 @@
 <?php
+session_start();
     include "Header.php";
+    include "../connection.php";
+    
 ?>
 <!DOCTYPE html>
 <html lang="en">
