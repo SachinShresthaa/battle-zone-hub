@@ -1,78 +1,64 @@
-<?php
-include_once '../connection.php'; // Database connection
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>BattleZoneHub Dashboard</title>
+    <link rel="stylesheet" href="styles.css">
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+</head>
+<body>
 
-// Fetch the latest tournament's ID
-$stmt = $conn->prepare("SELECT MAX(tournament_id) AS latest_tournament FROM pubg_team_registration ");
-$stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
-$latest_tournament_id = $row['latest_tournament'];
-$stmt->close();
+<div class="header">
+    <div class="logo">  </div>
+    <div class="nav">
+        <a href="#">Dashboard</a>
+        <a href="#">Users</a>
+        <a href="#">Tournaments</a>
+        <a href="#">Room Cards</a>
+        <a href="#">Leaderboard</a>
+        <a href="#">Share Live</a>
+        <a href="#">Logout</a>
+    </div>
+</div>
 
-if ($latest_tournament_id) {
-    $stmt = $conn->prepare("SELECT team_name, email, member1_name, member1_uid, member2_name, member2_uid, member3_name, member3_uid, member4_name, member4_uid
-    FROM pubg_team_registration
-    WHERE tournament_id = ? 
-    ORDER BY team_name ASC");
+<div class="container">
+    <h2>Tournament ID: 2</h2>
+    <table border="1" cellspacing="0" cellpadding="8" style="width:70%; margin-left:200px;">
+        <tr>
+            <th>Team Name</th>
+            <th>User Email</th>
+            <th>Players</th>
+            <th>Action</th>
+        </tr>
 
-    $stmt->bind_param("i", $latest_tournament_id);
-    $stmt->execute();
-    $result = $stmt->get_result();
-
-    if ($result->num_rows > 0) {
-        echo "<h2> Tournament ID: $latest_tournament_id </h2>";
-        echo "<table border='1' cellspacing='0' cellpadding='8'style='width:70%;margin-left:200px;'>
-                <tr>
-                    <th>Team Name</th>
-                    <th>User Email</th>
-                    <th>Players</th>
-                    <th>Action</th>
-                </tr>";
-
-        while ($team = $result->fetch_assoc()) {
-            // Collecting player details
-            $players = [
-                ['name' => $team['member1_name'], 'uid' => $team['member1_uid']],
-                ['name' => $team['member2_name'], 'uid' => $team['member2_uid']],
-                ['name' => $team['member3_name'], 'uid' => $team['member3_uid']],
-                ['name' => $team['member4_name'], 'uid' => $team['member4_uid']]
-            ];
-
-            echo "<tr id='team-{$team['team_name']}'>
-                    <td>{$team['team_name']}</td>
-                    <td>{$team['email']}</td>
-                    <td><button class='toggle-btn'style='background-color:green;padding:5px;border-radius:5px;'>Show Players</button></td>
-                    <td><button class='delete-btn' onclick='deleteTeam(\"{$team['team_name']}\", \"{$team['email']}\")'>Delete</button></td>
-                  </tr>";
-
-            echo "<tr class='players-row' id='players-{$team['team_name']}' style='display:none'>
-                    <td colspan='4'>
-                        <table border='1' cellspacing='0' cellpadding='8'>
-                            <tr>
-                                <th>Player Name</th>
-                                <th>UID</th>
-                            </tr>";
-
-            foreach ($players as $player) {
-                echo "<tr>
-                        <td>{$player['name']}</td>
-                        <td>{$player['uid']}</td>
-                      </tr>";
-            }
-
-            echo "          </table>
-                    </td>
-                  </tr>";
-        }
-        echo "</table>";
-    } else {
-        echo "<p>No teams have registered for this tournament yet.</p>";
-    }
-    $stmt->close();
-} else {
-    echo "<p>No tournaments found.</p>";
-}
-?>
+        <!-- Teams will be fetched dynamically -->
+        <tr id="team-Demon">
+            <td>Demon</td>
+            <td>aashish@gmail.com</td>
+            <td><button class="toggle-btn" style="background-color:green; padding:5px; border-radius:5px;">Show Players</button></td>
+            <td><button class="delete-btn" onclick="deleteTeam('Demon', 'aashish@gmail.com')">Delete</button></td>
+        </tr>
+        <tr class="players-row" id="players-Demon" style="display:none">
+            <td colspan="4">
+                <table border="1" cellspacing="0" cellpadding="8">
+                    <tr>
+                        <th>Player Name</th>
+                        <th>UID</th>
+                    </tr>
+                    <tr>
+                        <td>Player1</td>
+                        <td>UID1</td>
+                    </tr>
+                    <tr>
+                        <td>Player2</td>
+                        <td>UID2</td>
+                    </tr>
+                </table>
+            </td>
+        </tr>
+    </table>
+</div>
 
 <!-- Modal Structure -->
 <div id="playersModal" class="modal" style="display:none;">
@@ -89,86 +75,13 @@ if ($latest_tournament_id) {
     </div>
 </div>
 
-<!-- Modal Styles -->
-<style>
-/* Modal styles */
-.modal {
-    display: none; /* Hidden by default */
-    position: fixed;
-    z-index: 1;
-    left: 0;
-    top: 0;
-    width: 100%;
-    height: 100%;
-    overflow: auto;
-    background-color: rgb(0,0,0); /* Fallback color */
-    background-color: rgba(0,0,0,0.4); /* Black with opacity */
-    padding-top: 60px;
-}
-
-.modal-content {
-    background-color: #fefefe;
-    margin: 5% auto;
-    padding: 20px;
-    border: 1px solid #888;
-    width: 80%;
-}
-
-.close-btn {
-    color: #aaa;
-    float: right;
-    font-size: 28px;
-    font-weight: bold;
-}
-
-.close-btn:hover,
-.close-btn:focus {
-    color: black;
-    text-decoration: none;
-    cursor: pointer;
-}
-</style>
-
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
-// Function to handle team deletion via AJAX
-function deleteTeam(teamName, userEmail) {
-    if (confirm('Are you sure you want to delete this team?')) {
-        $.ajax({
-            url: 'delete_team.php', // PHP script to handle deletion
-            type: 'GET',
-            data: { team_name: teamName, user_email: userEmail }, // Send the team name and user email as GET parameters
-            success: function(response) {
-                console.log(response);  // Log the response for debugging
-                // Parse the JSON response
-                let result = JSON.parse(response);
-
-                // If the deletion is successful, remove the row from the table
-                if (result.success) {
-                    alert(result.message);
-                    // Remove the row from the table dynamically
-                    $('#team-' + teamName).remove();
-                    $('#players-' + teamName).remove();
-                } else {
-                    alert(result.message); // Show error message
-                }
-            },
-            error: function(xhr, status, error) {
-                console.error("AJAX Error: " + error);
-                alert('Error occurred while deleting the team. Please try again later.');
-            }
-        });
-    }
-}
-
 // When clicking on Show Players button
 $(document).ready(function() {
     $('button.toggle-btn').click(function() {
         let teamName = $(this).closest('tr').attr('id').split('-')[1];
-
-        // Get the player details
         let playersRow = $('#players-' + teamName).find('table tr');
-        
+
         // Clear any existing player data in the modal
         $('#playersTable').empty().append('<tr><th>Player Name</th><th>UID</th></tr>');
 
@@ -198,46 +111,70 @@ $(document).ready(function() {
         }
     });
 });
-</script>
-<script>
-    <?php
-include_once '../connection.php'; // Ensure correct database connection
 
-header('Content-Type: application/json'); // Ensure JSON response format
+// Function to handle team deletion via AJAX
+function deleteTeam(teamName, userEmail) {
+    $.ajax({
+        url: 'delete_team.php',
+        type: 'GET',
+        data: { team_name: teamName, user_email: userEmail }, // Send the correct parameters
+        success: function(response) {
+            let result = JSON.parse(response);
 
-if (isset($_GET['team_name']) && isset($_GET['user_email'])) {
-    include_once '../connection.php'; // Include database connection
-
-    $team_name = trim($_GET['team_name']);
-    $user_email = trim($_GET['user_email']);
-
-    // Enable MySQLi error reporting
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-    try {
-        // Prepare delete query
-        $stmt = $conn->prepare("DELETE FROM pubg_team_registration WHERE team_name = ? AND email = ?");
-        
-        if (!$stmt) {
-            echo json_encode(["success" => false, "message" => "SQL Prepare Error: " . $conn->error]);
-            exit;
+            // If the deletion is successful, remove the row from the table
+            if (result.success) {
+                alert(result.message);
+                $('#team-' + teamName).remove();
+                $('#players-' + teamName).remove();
+            } else {
+                alert(result.message);
+            }
+        },
+        error: function(xhr, status, error) {
+            console.error("AJAX Error: " + error);
+            alert('Error occurred while deleting the team. Please try again later.');
         }
-
-        $stmt->bind_param("ss", $team_name, $user_email);
-
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "Team '$team_name' deleted successfully"]);
-        } else {
-            echo json_encode(["success" => false, "message" => "Failed to delete team: " . $stmt->error]);
-        }
-
-        $stmt->close();
-    } catch (Exception $e) {
-        echo json_encode(["success" => false, "message" => "Exception: " . $e->getMessage()]);
-    }
-} else {
-    echo json_encode(["success" => false, "message" => "Invalid request parameters"]);
+    });
 }
-?>
+</script>
 
-    </script>
+<style>
+/* Modal styles */
+.modal {
+    display: none;
+    position: fixed;
+    z-index: 1;
+    left: 0;
+    top: 0;
+    width: 100%;
+    height: 100%;
+    overflow: auto;
+    background-color: rgba(0,0,0,0.4);
+    padding-top: 60px;
+}
+
+.modal-content {
+    background-color: #fefefe;
+    margin: 5% auto;
+    padding: 20px;
+    border: 1px solid #888;
+    width: 80%;
+}
+
+.close-btn {
+    color: #aaa;
+    float: right;
+    font-size: 28px;
+    font-weight: bold;
+}
+
+.close-btn:hover,
+.close-btn:focus {
+    color: black;
+    text-decoration: none;
+    cursor: pointer;
+}
+</style>
+
+</body>
+</html>

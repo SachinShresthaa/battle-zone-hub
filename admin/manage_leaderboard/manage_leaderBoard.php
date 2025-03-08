@@ -93,14 +93,14 @@ body {
     <!-- FF Leaderboard Section -->
     <div class="content-section active" id="ff">
         <?php
-            include "../ffadminleaderboard.php"; // For FF leaderboard
+            include "ffleaderboard.php"; // For FF leaderboard
         ?>
     </div>
 
     <!-- PUBG Leaderboard Section -->
     <div class="content-section" id="pubg">
         <?php
-            include ".php"; // For PUBG leaderboard
+            include "pubgleaderboard.php"; // For PUBG leaderboard
         ?>
     </div>
 </div>

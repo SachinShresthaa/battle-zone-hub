@@ -1,33 +1,60 @@
 <?php
-include 'connection.php';
-include "headerwithprofile.php";
+include "connection.php";
 
-// Ensure user is logged in
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit();
+// Ensure user is logged in (you might want to check session or authentication here)
+session_start();
+$user_id = $_SESSION['user_id'] ?? null;
+
+if (!$user_id) {
+    echo "You need to log in first.";
+    exit;
 }
 
-$user_id = $_SESSION['user_id'];
-
-// Fetch the user's registered PUBG tournament
-$query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail, r.room_id, r.room_password, r.description
-          FROM pubg_team_registration reg
-          INNER JOIN tournaments t ON reg.tournament_id = t.id
-          INNER JOIN room_details r ON t.category = r.category
-          WHERE reg.user_id = ? AND t.category = 'pubg'
-          ORDER BY t.date DESC LIMIT 1";
-
-$stmt = $conn->prepare($query);
+// Fetch the user's registered tournament category and tournament ID
+$sql = "SELECT t.category, t.id 
+        FROM pubg_team_registration r
+        JOIN tournaments t ON r.tournament_id = t.id
+        WHERE r.user_id = ?";
+$stmt = $conn->prepare($sql);
 $stmt->bind_param("i", $user_id);
 $stmt->execute();
-$result = $stmt->get_result();
-$row = $result->fetch_assoc();
+$stmt->bind_result($game_choice, $tournament_id);
+$stmt->fetch();
+$stmt->close();
 
-// PUBG specific colors
-$primaryColor = '#f1c40f';    // Yellow
-$secondaryColor = '#e67e22';  // Orange
-$accentColor = '#d35400';     // Dark Orange
+if (!$game_choice) {
+    echo "You are not registered for any tournament.";
+    exit;
+}
+
+// Fetch room details for the registered tournament
+$sql = "SELECT room_id, room_password, description 
+        FROM room_details r
+        JOIN tournaments t ON r.tournament_id = t.id
+        WHERE t.id = ? 
+        ORDER BY room_id ASC";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("i", $tournament_id);  // Filter rooms based on tournament_id
+$stmt->execute();
+$stmt->bind_result($room_id, $room_password, $description);
+$rooms = [];
+while ($stmt->fetch()) {
+    $rooms[] = ['room_id' => $room_id, 'room_password' => $room_password, 'description' => $description];
+}
+$stmt->close();
+
+// Set game-specific colors based on game choice
+if (strtolower($game_choice) === 'pubg') {
+    $primaryColor = '#f1c40f';    // Yellow
+    $secondaryColor = '#e67e22';  // Orange
+    $accentColor = '#d35400';     // Dark Orange
+    $gameIcon = 'gamepad';
+} else {
+    $primaryColor = '#3498db';    // Blue (FreeFire)
+    $secondaryColor = '#2980b9';  // Dark Blue (FreeFire)
+    $accentColor = '#1abc9c';     // Teal
+    $gameIcon = 'fire';
+}
 ?>
 
 <!DOCTYPE html>
@@ -35,7 +62,7 @@ $accentColor = '#d35400';     // Dark Orange
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>PUBG Tournament Room Details</title>
+    <title>Available Rooms - <?php echo htmlspecialchars($game_choice); ?></title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
     <style>
         :root {
@@ -46,8 +73,12 @@ $accentColor = '#d35400';     // Dark Orange
             --card-bg: #1e1e1e;
             --text-light: #ffffff;
             --text-faded: #b3b3b3;
+            --table-border: rgba(255, 255, 255, 0.1);
+            --table-header: rgba(0, 0, 0, 0.3);
+            --table-row-odd: rgba(255, 255, 255, 0.03);
+            --table-row-even: rgba(255, 255, 255, 0.01);
         }
-        
+
         body {
             background-color: var(--background-dark);
             color: var(--text-light);
@@ -57,22 +88,22 @@ $accentColor = '#d35400';     // Dark Orange
             min-height: 100vh;
             background-image: radial-gradient(circle at 10% 20%, rgba(0, 0, 0, 0.8) 0%, var(--background-dark) 90%);
         }
-        
+
         .container {
-            max-width: 900px;
+            max-width: 1000px;
             margin: 40px auto;
             padding: 0 20px;
         }
-        
-        .room-card {
+
+        .rooms-card {
             background-color: var(--card-bg);
             border-radius: 12px;
             overflow: hidden;
             box-shadow: 0 10px 30px rgba(0, 0, 0, 0.3);
             position: relative;
         }
-        
-        .room-card::before {
+
+        .rooms-card::before {
             content: '';
             position: absolute;
             top: 0;
@@ -81,68 +112,90 @@ $accentColor = '#d35400';     // Dark Orange
             height: 5px;
             background: linear-gradient(90deg, var(--primary-color), var(--secondary-color), var(--accent-color));
         }
-        
+
         .card-header {
             background-color: rgba(0, 0, 0, 0.3);
             padding: 20px 30px;
             border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-            display: flex;
-            align-items: center;
-            justify-content: space-between;
+            text-align: center;
         }
-        
-        .card-header h2 {
-            color: var(--primary-color);
+
+        .card-header h1 {
+            color: var(--text-light);
             margin: 0;
             font-size: 1.8rem;
             font-weight: 700;
-            display: flex;
+            display: inline-flex;
             align-items: center;
+            justify-content: center;
             gap: 12px;
         }
-        
-        .tournament-name {
-            font-size: 1.3rem;
-            color: var(--text-light);
-            margin: 0;
-            padding: 20px 30px;
-            background-color: rgba(0, 0, 0, 0.2);
-            border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+
+        .card-header .game-icon {
+            color: var(--primary-color);
+            font-size: 1.5rem;
         }
-        
-        .room-details {
+
+        .game-name {
+            color: var(--primary-color);
+            font-weight: 600;
+        }
+
+        .rooms-table-container {
             padding: 25px 30px;
+            overflow-x: auto;
         }
-        
-        .detail-row {
-            display: flex;
-            margin-bottom: 20px;
-            align-items: center;
+
+        .rooms-table {
+            width: 100%;
+            border-collapse: collapse;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
         }
-        
-        .detail-row:last-child {
-            margin-bottom: 0;
-        }
-        
-        .detail-label {
-            flex: 0 0 140px;
-            color: var(--text-faded);
+
+        .rooms-table th {
+            background-color: var(--table-header);
+            color: var(--primary-color);
+            font-weight: 600;
+            text-align: left;
+            padding: 15px 20px;
+            border-bottom: 2px solid var(--primary-color);
             font-size: 0.95rem;
-            display: flex;
-            align-items: center;
-            gap: 8px;
+            text-transform: uppercase;
+            letter-spacing: 1px;
         }
-        
-        .detail-value {
-            flex: 1;
-            font-size: 1.1rem;
-            font-weight: 500;
-            padding-left: 15px;
+
+        .rooms-table th:first-child {
+            width: 170px;
+            text-align: center;
+            background-color: rgba(0, 0, 0, 0.5);
+        }
+
+        .rooms-table td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--table-border);
             position: relative;
         }
-        
+
+        .rooms-table tr:nth-child(odd) td {
+            background-color: var(--table-row-odd);
+        }
+
+        .rooms-table tr:nth-child(even) td {
+            background-color: var(--table-row-even);
+        }
+
+        .rooms-table tr:last-child td {
+            border-bottom: none;
+        }
+
+        .rooms-table th:first-child, .rooms-table td:first-child {
+            border-right: 1px solid var(--table-border);
+        }
+
         .credential-value {
-            background-color: rgba(255, 255, 255, 0.1);
+            background-color: rgba(255, 255, 255, 0.05);
             padding: 8px 15px;
             border-radius: 6px;
             font-family: 'Courier New', monospace;
@@ -151,8 +204,20 @@ $accentColor = '#d35400';     // Dark Orange
             display: flex;
             align-items: center;
             justify-content: space-between;
+            margin-bottom: 5px;
         }
-        
+
+        .description-box {
+            background-color: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding: 12px;
+            font-size: 0.95rem;
+            line-height: 1.5;
+            color: var(--text-faded);
+            border-left: 3px solid var(--primary-color);
+            margin-bottom: 5px;
+        }
+
         .copy-btn {
             background: none;
             border: none;
@@ -162,30 +227,19 @@ $accentColor = '#d35400';     // Dark Orange
             padding: 5px;
             transition: all 0.2s ease;
         }
-        
+
         .copy-btn:hover {
             color: var(--text-light);
             transform: scale(1.1);
         }
-        
-        .description-box {
-            background-color: rgba(255, 255, 255, 0.05);
-            border-radius: 8px;
-            padding: 15px;
-            margin-top: 10px;
-            font-size: 0.95rem;
-            line-height: 1.5;
-            color: var(--text-faded);
-            border-left: 3px solid var(--primary-color);
-        }
-        
+
         .card-footer {
             padding: 20px 30px;
             border-top: 1px solid rgba(255, 255, 255, 0.05);
             display: flex;
             justify-content: center;
         }
-        
+
         .btn {
             display: inline-flex;
             align-items: center;
@@ -202,172 +256,102 @@ $accentColor = '#d35400';     // Dark Orange
             cursor: pointer;
             box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
         }
-        
+
         .btn:hover {
             transform: translateY(-2px);
             box-shadow: 0 6px 20px rgba(0, 0, 0, 0.4);
         }
-        
-        .no-room {
+
+        .message {
             text-align: center;
-            padding: 60px 30px;
+            padding: 50px 30px;
+            font-size: 1.2rem;
+            color: var(--text-faded);
         }
-        
-        .no-room i {
+
+        .message i {
+            display: block;
             font-size: 3rem;
             color: var(--primary-color);
             margin-bottom: 20px;
             opacity: 0.7;
         }
-        
-        .no-room p {
-            font-size: 1.2rem;
-            color: var(--text-faded);
-            margin-bottom: 30px;
-        }
-        
-        @media (max-width: 768px) {
-            .container {
-                padding: 0 15px;
-                margin: 20px auto;
-            }
-            
-            .detail-row {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 5px;
-                margin-bottom: 15px;
-            }
-            
-            .detail-label {
-                flex: initial;
-                margin-bottom: 5px;
-            }
-            
-            .detail-value {
-                padding-left: 0;
-                width: 100%;
-            }
-            
-            .card-header h2 {
-                font-size: 1.5rem;
-            }
-        }
     </style>
 </head>
 <body>
     <div class="container">
-        <div class="room-card">
+        <div class="rooms-card">
             <div class="card-header">
-                <h2>
-                    <i class="fas fa-gamepad" style="color: var(--primary-color);"></i>
-                    PUBG Tournament Room
-                </h2>
-                <div class="date-time">
-                    <?php if ($row): ?>
-                        <i class="far fa-calendar-alt" style="color: var(--primary-color); margin-right: 5px;"></i>
-                        <?php echo date('d M Y', strtotime($row['date'])); ?>
-                    <?php endif; ?>
-                </div>
+                <h1>
+                    <i class="fas fa-<?php echo $gameIcon; ?> game-icon"></i>
+                    Available Rooms for <span class="game-name"><?php echo htmlspecialchars($game_choice); ?></span>
+                </h1>
             </div>
             
-            <?php if ($row): ?>
-                <div class="tournament-name">
-                    <i class="fas fa-trophy" style="color: var(--primary-color); margin-right: 10px;"></i>
-                    <?php echo htmlspecialchars($row['tournament_name']); ?>
-                </div>
-                
-                <div class="room-details">
-                    <div class="detail-row">
-                        <div class="detail-label">
-                            <i class="far fa-clock" style="color: var(--primary-color);"></i> Time
-                        </div>
-                        <div class="detail-value">
-                            <?php echo htmlspecialchars($row['time']); ?>
-                        </div>
+            <div class="rooms-table-container">
+                <?php if (empty($rooms)) { ?>
+                    <div class="message">
+                        <i class="fas fa-exclamation-circle"></i>
+                        <p>No rooms are currently available for <?php echo htmlspecialchars($game_choice); ?>.</p>
                     </div>
-                    
-                    <div class="detail-row">
-                        <div class="detail-label">
-                            <i class="fas fa-fingerprint" style="color: var(--primary-color);"></i> Room ID
-                        </div>
-                        <div class="detail-value">
-                            <div class="credential-value">
-                                <?php echo htmlspecialchars($row['room_id']); ?>
-                                <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($row['room_id']); ?>')" title="Copy to clipboard">
-                                    <i class="far fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <div class="detail-label">
-                            <i class="fas fa-key" style="color: var(--primary-color);"></i> Password
-                        </div>
-                        <div class="detail-value">
-                            <div class="credential-value">
-                                <?php echo htmlspecialchars($row['room_password']); ?>
-                                <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($row['room_password']); ?>')" title="Copy to clipboard">
-                                    <i class="far fa-copy"></i>
-                                </button>
-                            </div>
-                        </div>
-                    </div>
-                    
-                    <div class="detail-row">
-                        <div class="detail-label">
-                            <i class="fas fa-info-circle" style="color: var(--primary-color);"></i> Description
-                        </div>
-                        <div class="detail-value">
-                            <div class="description-box">
-                                <?php echo nl2br(htmlspecialchars($row['description'])); ?>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-                
-                <div class="card-footer">
-                    <a href="viewDetails.php" class="btn">
-                        <i class="fas fa-list-ul"></i> View Tournament Details
-                    </a>
-                </div>
-            <?php else: ?>
-                <div class="no-room">
-                    <i class="fas fa-exclamation-circle"></i>
-                    <p>No room details available for this tournament.</p>
-                    <a href="tournaments.php" class="btn">
-                        <i class="fas fa-search"></i> Browse Tournaments
-                    </a>
-                </div>
-            <?php endif; ?>
+                <?php } else { ?>
+                    <table class="rooms-table">
+                        <tr>
+                            <th>Details</th>
+                            <?php 
+                            for ($i = 0; $i < count($rooms); $i++) { 
+                                echo "<th>Room " . ($i + 1) . "</th>"; 
+                            } 
+                            ?>
+                        </tr>
+                        <tr>
+                            <td>Room ID</td>
+                            <?php foreach ($rooms as $room) { ?>
+                                <td data-label="Room ID">
+                                    <div class="credential-value">
+                                        <?php echo htmlspecialchars($room['room_id']); ?>
+                                        <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($room['room_id']); ?>')" title="Copy to clipboard">
+                                            <i class="far fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <?php } ?>
+                        </tr>
+                        <tr>
+                            <td>Password</td>
+                            <?php foreach ($rooms as $room) { ?>
+                                <td data-label="Password">
+                                    <div class="credential-value">
+                                        <?php echo htmlspecialchars($room['room_password']); ?>
+                                        <button class="copy-btn" onclick="copyToClipboard('<?php echo htmlspecialchars($room['room_password']); ?>')" title="Copy to clipboard">
+                                            <i class="far fa-copy"></i>
+                                        </button>
+                                    </div>
+                                </td>
+                            <?php } ?>
+                        </tr>
+                        <tr>
+                            <td>Description</td>
+                            <?php foreach ($rooms as $room) { ?>
+                                <td data-label="Description">
+                                    <div class="description-box">
+                                        <?php echo htmlspecialchars($room['description']); ?>
+                                    </div>
+                                </td>
+                            <?php } ?>
+                        </tr>
+                    </table>
+                <?php } ?>
+            </div>
         </div>
     </div>
-    
+
     <script>
         function copyToClipboard(text) {
-            const textarea = document.createElement('textarea');
-            textarea.value = text;
-            document.body.appendChild(textarea);
-            textarea.select();
-            document.execCommand('copy');
-            document.body.removeChild(textarea);
-            
-            // Show feedback
-            const btn = event.currentTarget;
-            const originalHtml = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-check"></i>';
-            btn.style.color = '#2ecc71';
-            
-            setTimeout(() => {
-                btn.innerHTML = originalHtml;
-                btn.style.color = '';
-            }, 1500);
+            navigator.clipboard.writeText(text).then(function() {
+                alert("Copied to clipboard!");
+            });
         }
     </script>
 </body>
 </html>
-
-<?php
-$stmt->close();
-?>

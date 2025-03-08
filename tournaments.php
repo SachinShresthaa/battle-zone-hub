@@ -45,7 +45,7 @@ $_SESSION['entry_fee'] = $entryFee;
     // Prepare the query based on category, showing only one tournament
     if ($category) {
         $category = $conn->real_escape_string($category);
-        $query = "SELECT * FROM tournaments WHERE LOWER(category) = LOWER('$category') ORDER BY date DESC, time DESC LIMIT 1";
+        $query = "SELECT * FROM tournaments WHERE LOWER(category) = LOWER('$category') ORDER BY date ASC, time ASC LIMIT 1";
     } else {
         $query = "SELECT * FROM tournaments ORDER BY date ASC, time ASC LIMIT 1";
     }

@@ -21,7 +21,11 @@ if ($tournament_id > 0) {
 // Ensure user is logged in before registering
 if (!isset($_SESSION['user_id'])) {
     $errorMessage = "You must be logged in to register.";
+} else {
+    // Set user_email to prevent undefined key warning
+    $user_email = $_SESSION['user_email'] ?? '';
 }
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
     // Get the form data
@@ -62,7 +66,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
 
             // Bind the parameters
             $stmt->bind_param(
-                "sisssssssssi", // Correct data types for all parameters
+                "sissssssssis", // Correct data types for all parameters
                 $teamName,
                 $tournament_id,
                 $member1Name,

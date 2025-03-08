@@ -47,16 +47,17 @@ input, select {
     font-size: 20px;
 }
 .btn {
-    display: inline-block;
-    padding: 18px;
+    display: flex;
+    padding: 10px;
     background: rgb(229, 23, 23);
     color: white;
     text-decoration: none;
-    border-radius: 15px;
+    border-radius: 5px;
     text-align: center;
     cursor: pointer;
     border: none;
-    font-size: 22px;
+    font-size: 20px;
+    gap:10px;
 }
 .btn:hover {
     background: rgb(255, 49, 49);

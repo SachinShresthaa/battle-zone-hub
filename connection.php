@@ -1,8 +1,8 @@
 <?php
-$hostname = "localhost"; 
+$hostname = "sqlserver"; 
 $dbuser = "root";
-$dbpassword = ""; 
-$dbname = "battlezonehub";
+$dbpassword = "rootpassword"; 
+$dbname = "battlezone";
 
 $conn = mysqli_connect($hostname, $dbuser, $dbpassword, $dbname);
 

@@ -107,11 +107,7 @@ if (isset($_POST['add_stream'])) {
         }
     } else {
         ?>
-        <h2>Select a Category</h2>
-        <div class="category-buttons">
-            <a href="?category=PUBG" class="category-btn">PUBG</a>
-            <a href="?category=Free Fire" class="category-btn">Free Fire</a>
-        </div>
+        <p>No Live Stream Available.</p>
         <?php
     }
     ?>

@@ -41,11 +41,11 @@ if ($latest_tournament_id) {
             echo "<tr id='team-{$team['team_name']}'>
                     <td>{$team['team_name']}</td>
                     <td>{$team['user_email']}</td>
-                    <td><button style='background-color:green;padding:5px;border-radius:5px;'class='toggle-btn'>Show Players</button></td>
+                    <td><button style='background-color:green;padding:5px;border-radius:5px;' class='toggle-btn'>Show Players</button></td>
                     <td><button class='delete-btn' onclick='deleteTeam(\"{$team['team_name']}\", \"{$team['user_email']}\")'>Delete</button></td>
                   </tr>";
 
-            echo "<tr class='players-row' id='players-{$team['team_name']}' style='display:none;' >
+            echo "<tr class='players-row' id='players-{$team['team_name']}' style='display:none;'>
                     <td colspan='4'>
                         <table border='1' cellspacing='0' cellpadding='8'>
                             <tr>
@@ -96,7 +96,7 @@ if ($latest_tournament_id) {
     z-index: 1;
     left: 0;
     top: 0;
-    /* width: 100%; */
+    width: 100%;
     height: 100%;
     overflow: auto;
     background-color: rgb(0,0,0); /* Fallback color */
@@ -125,38 +125,39 @@ if ($latest_tournament_id) {
     text-decoration: none;
     cursor: pointer;
 }
-#playersModel{
-    width: 30%;
-    height: 30%; 
-}
 </style>
 
 <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
 <script>
 // Function to handle team deletion via AJAX
 function deleteTeam(teamName, userEmail) {
+    console.log("Delete button clicked for team:", teamName, "and email:", userEmail); // Debugging
     if (confirm('Are you sure you want to delete this team?')) {
         $.ajax({
             url: 'delete_team.php', // PHP script to handle deletion
             type: 'GET',
             data: { team_name: teamName, user_email: userEmail }, // Send the team name and user email as GET parameters
             success: function(response) {
-                console.log(response);  // Log the response for debugging
-                // Parse the JSON response
-                let result = JSON.parse(response);
-
-                // If the deletion is successful, remove the row from the table
-                if (result.success) {
-                    alert(result.message);
-                    // Remove the row from the table dynamically
-                    $('#team-' + teamName).remove();
-                    $('#players-' + teamName).remove();
-                } else {
-                    alert(result.message); // Show error message
+                console.log("Response from server:", response);  // Debugging
+                try {
+                    let result = JSON.parse(response); // Parse the JSON response
+                    if (result.success) {
+                        alert(result.message);
+                        // Remove the row from the table dynamically
+                        $('#team-' + teamName).remove();
+                        $('#players-' + teamName).remove();
+                    } else {
+                        alert(result.message); // Show error message
+                    }
+                } catch (e) {
+                    console.error("Error parsing JSON:", e); // Debugging
+                    alert('Invalid response from the server.');
                 }
             },
             error: function(xhr, status, error) {
-                console.error("AJAX Error: " + error);
+                console.error("AJAX Error: " + error); // Debugging
+                console.log("Status:", status); // Debugging
+                console.log("XHR:", xhr); // Debugging
                 alert('Error occurred while deleting the team. Please try again later.');
             }
         });

@@ -102,7 +102,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
         );
 
         if ($stmt->execute()) {
-            $successMessage = "Team registered successfully!";
+            $successMessage = "";
         } else {
             $errorMessage = "Error: " . $stmt->error;
         }
@@ -122,7 +122,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
 <body>
     <div class="main">
         <div class="left-side">
-            <img src="./ASSETS/FFregister.png" alt="Free Fire Registration">
+            <img src="./ASSETS/PUBGregister.png" alt="Free Fire Registration">
         </div>
         <div class="right-side">
             <h1>Team Registration Form</h1>

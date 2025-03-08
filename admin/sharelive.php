@@ -108,10 +108,8 @@ $conn->close();
         .category-badge {
             display: inline-block;
             padding: 4px 8px;
-            border-radius: 4px;
-            background-color: #007bff;
-            color: white;
-            font-size: 0.9em;
+            color: black;
+            font-size: 18px;
         }
     </style>
 </head>
@@ -175,7 +173,7 @@ $conn->close();
                     </thead>
                     <tbody>
                         <?php foreach ($videos as $video): ?>
-                            <tr>s
+                            <tr>
                                 <td><img src="<?php echo htmlspecialchars($video['thumbnail_url']); ?>" alt="<?php echo htmlspecialchars($video['title']); ?>" width="120"></td>
                                 <td><?php echo htmlspecialchars($video['title']); ?></td>
                                 <td>

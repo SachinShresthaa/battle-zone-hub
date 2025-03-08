@@ -31,11 +31,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
 }
 
 // Fetch latest tournaments for both PUBG and FreeFire categories (limit 1 each)
-$tournaments_result = $conn->query("
-    (SELECT id, name FROM tournaments WHERE category = 'PUBG' ORDER BY id DESC LIMIT 1) 
-    UNION 
-    (SELECT id, name FROM tournaments WHERE category = 'FreeFire' ORDER BY id DESC LIMIT 1)
-");
+$tournaments_result = $conn->query("SELECT id, name FROM tournaments WHERE category IN ('PUBG', 'FreeFire') ORDER BY category DESC, id DESC LIMIT 2");
 $tournaments = [];
 while ($row = $tournaments_result->fetch_assoc()) {
     $tournaments[] = $row;
@@ -45,6 +41,11 @@ while ($row = $tournaments_result->fetch_assoc()) {
 $sql_delete_expired = "DELETE FROM room_details WHERE created_at < NOW() - INTERVAL 15 MINUTE";
 $conn->query($sql_delete_expired);
 
+// Fetch room details with tournament names
+$rooms_result = $conn->query("SELECT rd.id, rd.room_id, rd.room_password, rd.description, rd.tournament_id, rd.created_at, t.name as tournament_name
+                              FROM room_details rd
+                              JOIN tournaments t ON rd.tournament_id = t.id
+                              ORDER BY rd.created_at DESC");
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -128,6 +129,52 @@ $conn->query($sql_delete_expired);
             background-color: #4CAF50;
             color: white;
         }
+
+       /* Table Styles */
+       table {
+    width: 70%;
+    margin: 20px auto;
+    border-collapse: collapse;
+    background-color:rgb(153, 152, 152);
+    color: white;
+}
+
+th, td {
+    padding: 12px;
+    border: 1px solid white;
+    text-align: center;
+}
+
+th {
+    background-color:rgb(63, 62, 62);
+    
+    font-size:20px;
+    color: ;
+}
+
+td {
+    background-color:rgb(221, 216, 216);
+    font-size:20px;
+    font-weight:bold;
+    color:black;
+}
+
+button {
+    padding: 5px 10px;
+    background-color: red;
+    color: white;
+    border: none;
+    cursor: pointer;
+    font-weight: bold;
+    font-size:15px;
+}
+
+table button:hover {
+    background-color: darkred;
+}
+.space{
+    height:20vh;
+}
     </style>
 </head>
 <body>
@@ -158,12 +205,37 @@ $conn->query($sql_delete_expired);
             
             <button type="submit" class="btn-submit">Add Room</button>
         </form>
-
+        <h3>Existing Rooms</h3>
         <?php if ($message): ?>
             <p class="message <?php echo strpos($message, 'successfully') !== false ? 'success' : 'error'; ?>">
                 <?php echo $message; ?>
             </p>
         <?php endif; ?>
+
+        
     </div>
+    <table class="rooms-table">
+            <tr>
+                <th>Room ID</th>
+                <th>Password</th>
+                <th>Description</th>
+                <th>Tournament</th>
+                <th>Created At</th>
+                <th>Actions</th>
+            </tr>
+            <?php while ($room = $rooms_result->fetch_assoc()): ?>
+            <tr>
+                <td><?php echo $room['room_id']; ?></td>
+                <td><?php echo $room['room_password']; ?></td>
+                <td><?php echo $room['description']; ?></td>
+                <td><?php echo $room['tournament_name']; ?></td>
+                <td><?php echo $room['created_at']; ?></td>
+                <td>
+                    <button class="edit-btn" onclick="window.location.href='edit_room.php?id=<?php echo $room['id']; ?>'">Edit</button>
+                </td>
+            </tr>
+            <?php endwhile; ?>
+        </table>
+        <div class="space"></div>
 </body>
 </html>

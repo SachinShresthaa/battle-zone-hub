@@ -28,10 +28,113 @@ $teamsResult = $conn->query($teamsQuery);
     <title>Registered Teams</title>
     <link rel="stylesheet" href="css/viewDetails.css">
 </head>
+<style>
+
+/* Decorative Line */
+.line {
+    width: 180px;
+    height: 5px;
+    background: #e51b1b;
+    margin: 10px auto 30px auto;
+    border-radius: 5px;
+}
+
+/* Teams Section */
+.teams-section {
+    width: 85%;
+    overflow-x: auto;
+    padding-left:180px;
+}
+
+/* Table Styles */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: #222;
+    border-radius: 5px;
+    overflow: hidden;
+}
+
+th, td {
+    padding: 15px;
+    font-size: 20px;
+    border-bottom: 2px solid white;
+    text-align: center;
+}
+
+th {
+    background:#243b55;
+    color: white;
+    text-transform: uppercase;
+    font-weight: bold;
+}
+
+td {
+    background: #1e1e1e;
+    color: #fff;
+}
+
+/* Hover Effect */
+tr:hover {
+    background: #292929;
+    transition: 0.3s;
+}
+
+/* Show Players Button */
+.show-players-btn {
+    background: #243b55;
+    border: none;
+    padding: 10px 25px;
+    color: white;
+    font-size: 18px;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: 0.3s;
+    font-weight: bold;
+    text-transform: uppercase;
+}
+
+.show-players-btn:hover {
+    background: white;
+    transform: scale(1.05);
+    color:black;
+}
+
+/* Players Details (Initially Hidden) */
+.hidden-players {
+    display: none;
+    background:rgb(122, 35, 13);
+    color: #ff6b6b;
+    padding: 15px;
+    border-radius: 10px;
+    margin-top: 10px;
+    border: 1px solid #e51b1b;
+    transition: 0.3s ease-in-out;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .main {
+        max-width: 95%;
+    }
+
+    h1 {
+        font-size: 30px;
+    }
+
+    th, td {
+        font-size: 18px;
+        padding: 12px;
+    }
+}
+
+.space {
+    height: 50px;
+}
+
+</style>
 <body>
     <div class="main">
-        <h1>Registered Teams</h1>
-        <div class="line"></div>
         
         <div class="teams-section">
             <?php if ($teamsResult && $teamsResult->num_rows > 0): ?>

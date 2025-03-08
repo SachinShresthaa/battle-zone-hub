@@ -1,16 +1,50 @@
 <?php
-include_once 'connection.php'; // Database connection
+include 'connection.php';
 
-// Fetch recent team names from the latest tournament
-$stmt = $conn->prepare("
-    SELECT DISTINCT team_name, kills, position, points 
-    FROM ff_team_registration 
-    WHERE tournament_id = (
-        SELECT id FROM tournaments ORDER BY date DESC LIMIT 1
-    )
-");
+// Fetch the latest tournament's ID
+$stmt = $conn->prepare("SELECT MAX(tournament_id) AS latest_tournament FROM ff_team_registration");
 $stmt->execute();
 $result = $stmt->get_result();
+$row = $result->fetch_assoc();
+$latest_tournament_id = $row['latest_tournament'] ?? null;
+$stmt->close();
+
+// If no tournament is found, stop execution
+if ($latest_tournament_id === null) {
+    die("<p style='color: red; font-size: 18px; text-align: center;'>No tournaments found.</p>");
+}
+
+// Handle form submission to update kills, points, and total_points
+if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['update'])) {
+    $team_id = (int)$_POST['team_id'];
+    $kills = (int)$_POST['kills'];
+    $points = (int)$_POST['points'];
+
+    // Fetch current kills, points, and total_points
+    $stmt = $conn->prepare("SELECT kills, points, total_points FROM ff_team_registration WHERE id = ? AND tournament_id = ?");
+    $stmt->bind_param("ii", $team_id, $latest_tournament_id);
+    $stmt->execute();
+    $result = $stmt->get_result();
+    $team = $result->fetch_assoc();
+    $current_kills = $team['kills'] ?? 0;
+    $current_points = $team['points'] ?? 0;
+    $current_total_points = $team['total_points'] ?? 0;
+
+    // Calculate new kills, points, and total points
+    $new_kills = $current_kills + $kills;
+    $new_points = $current_points + $points;
+    $new_total_points = $current_total_points + $kills + $points;
+
+    // Update team data
+    $updateStmt = $conn->prepare("UPDATE ff_team_registration SET kills = ?, points = ?, total_points = ? WHERE id = ? AND tournament_id = ?");
+    $updateStmt->bind_param("iiiii", $new_kills, $new_points, $new_total_points, $team_id, $latest_tournament_id);
+    if ($updateStmt->execute()) {
+        echo "<script>alert('Team scores updated successfully!'); window.location.href=pubgadminleaderboard.php;</script>";
+    } else {
+        echo "<script>alert('Failed to update scores.');</script>";
+    }
+    $updateStmt->close();
+}
 ?>
 
 <!DOCTYPE html>
@@ -18,221 +52,84 @@ $result = $stmt->get_result();
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Enter Kills & Position</title>
-    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script> <!-- jQuery for AJAX -->
+    <title>Admin Tournament Leaderboard</title>
     <style>
-        /* General styles */
-        body {
-            font-family: Arial, sans-serif;
+        h1 {
+            color: #333;
         }
-
-        h2 {
-            text-align: center;
-            font-size: 36px;
-            padding-top: 30px;
-            color: #E74C3C;
-        }
-
         table {
-            width: 80%;
-            margin: 20px auto;
+            width: 100%;
             border-collapse: collapse;
-        }
-
-        table th, table td {
-            padding: 15px;
-            text-align: center;
-            border: 2px solid white;
-        }
-
-        table th {
-            background-color: #2E2E2E;
-            color: white;
-            font-size: 20px;
-        }
-
-        table td {
-            background-color: #d4d2d2;
-            font-size: 18px;
-        }
-
-        table tr:hover {
-            background-color: #f1c40f;
-            cursor: pointer;
-        }
-
-        .update-btn {
-            background: rgb(229, 23, 23);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            cursor: pointer;
-            border-radius: 5px;
-            font-size: 16px;
-        }
-
-        .update-btn:hover {
-            background: rgb(255, 49, 49);
-        }
-
-        /* Modal styles */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0, 0, 0, 0.5);
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal-content {
+            margin: 20px 0;
             background-color: white;
-            padding: 20px;
-            border-radius: 8px;
-            text-align: center;
-            width: 300px;
         }
-
-        .close-btn {
-            background: #ff0000;
-            color: white;
-            border: none;
-            padding: 8px 16px;
-            cursor: pointer;
-            margin-top: 10px;
-        }
-
-        .close-btn:hover {
-            background: #cc0000;
-        }
-
-        input {
-            width: 100%;
+        th, td {
             padding: 10px;
-            margin: 10px 0;
-            border: 1px solid #444;
-            font-size: 16px;
+            text-align: center;
+            border: 1px solid #ddd;
         }
-
+        th {
+            background-color: #f4f4f4;
+        }
+        input {
+            width: 80px;
+            text-align: center;
+            color: black;
+        }
         button {
-            padding: 10px 20px;
-            font-size: 16px;
+            padding: 5px 10px;
+            background-color: #4CAF50;
+            color: white;
             border: none;
-            border-radius: 5px;
             cursor: pointer;
         }
-
-        .submit-btn {
-            background: #2E86C1;
-            color: white;
-        }
-
-        .submit-btn:hover {
-            background: #1F618D;
+        button:hover {
+            background-color: #45a049;
         }
     </style>
 </head>
 <body>
 
-    <h2>Enter Kills & Position for Teams</h2>
-
-    <table border="1">
+<div class="container">
+    <h1>Admin Tournament Leaderboard</h1>
+    <h2>Update Team Scores</h2>
+    
+    <table>
         <tr>
             <th>Team Name</th>
-            <th>Kills</th>
-            <th>Position</th>
+            <th>Total Kills</th>
             <th>Total Points</th>
-            <th>Update</th>
+            <th>Total (Kills + Points)</th>
+            <th>Actions</th>
         </tr>
-        <?php while ($row = $result->fetch_assoc()) { ?>
-            <tr id="team-<?php echo htmlspecialchars($row['team_name']); ?>">
-                <td><?php echo htmlspecialchars($row['team_name']); ?></td>
-                <td class="kills"><?php echo intval($row['kills']); ?></td>
-                <td class="position"><?php echo intval($row['position']); ?></td>
-                <td class="points"><?php echo intval($row['points']); ?></td>
-                <td>
-    <button class="update-btn" onclick="openModal(
-        '<?php echo htmlspecialchars($row['team_name']); ?>',
-        <?php echo intval($row['kills']); ?>,
-        <?php echo intval($row['position']); ?>
-    )">Update</button>
-    <button class="reset-btn" onclick="resetTeamData('<?php echo htmlspecialchars($row['team_name']); ?>')">Reset</button>
-</td>
-            </tr>
-        <?php } ?>
+
+        <?php
+        // Fetch teams for the latest tournament
+        $stmt = $conn->prepare("SELECT id, team_name, kills, points, total_points FROM ff_team_registration WHERE tournament_id = ? ORDER BY points DESC, kills DESC");
+        $stmt->bind_param("i", $latest_tournament_id);
+        $stmt->execute();
+        $result = $stmt->get_result();
+
+        while ($team = $result->fetch_assoc()) {
+            echo "<tr>
+                    <form method='POST'>
+                        <td>{$team['team_name']}</td>
+                        <td><input type='number' name='kills' value='0' required></td>
+                        <td><input type='number' name='points' value='0' required></td>
+                        <td><input type='number' value='{$team['total_points']}' disabled></td>
+                        <td>
+                            <input type='hidden' name='team_id' value='{$team['id']}'>
+                            <button type='submit' name='update'>Update</button>
+                        </td>
+                    </form>
+                  </tr>";
+        }
+        $stmt->close();
+        ?>
     </table>
-
-    <!-- Modal Popup -->
-    <div id="updateModal" class="modal">
-        <div class="modal-content">
-            <h3>Update Kills & Position</h3>
-            <input type="hidden" id="teamName">
-            <label>Team: <span id="teamDisplay"></span></label><br>
-            <label>Kills:</label>
-            <input type="number" id="killsInput" min="0">
-            <label>Position:</label>
-            <input type="number" id="positionInput" min="1">
-            <button onclick="saveUpdate()" class="submit-btn">Save</button>
-            <button class="close-btn" onclick="closeModal()">Cancel</button>
-        </div>
-    </div>
-
-    <script>
-        function openModal(teamName, kills, position) {
-            document.getElementById("teamName").value = teamName;
-            document.getElementById("teamDisplay").innerText = teamName;
-            document.getElementById("killsInput").value = kills;
-            document.getElementById("positionInput").value = position;
-            document.getElementById("updateModal").style.display = "flex";
-        }
-
-        function closeModal() {
-            document.getElementById("updateModal").style.display = "none";
-        }
-
-        function saveUpdate() {
-            let teamName = document.getElementById("teamName").value;
-            let kills = document.getElementById("killsInput").value;
-            let position = document.getElementById("positionInput").value;
-
-            $.ajax({
-                url: 'save_kills_position.php',
-                type: 'POST',
-                data: { team_name: teamName, kills: kills, position: position },
-                success: function(response) {
-                    let data = JSON.parse(response);
-                    let row = document.getElementById("team-" + teamName);
-                    row.querySelector(".kills").innerText = data.kills;
-                    row.querySelector(".position").innerText = data.position;
-                    row.querySelector(".points").innerText = data.points;
-                    closeModal();
-                }
-            });
-        }
-    </script>
-    <script>
-        function resetTeamData(teamName) {
-    if (confirm("Are you sure you want to reset kills, position, and points for " + teamName + "?")) {
-        $.ajax({
-            url: 'reset_kills_position.php',
-            type: 'POST',
-            data: { team_name: teamName },
-            success: function(response) {
-                let data = JSON.parse(response);
-                let row = document.getElementById("team-" + teamName);
-                row.querySelector(".kills").innerText = data.kills;
-                row.querySelector(".position").innerText = data.position;
-                row.querySelector(".points").innerText = data.points;
-                alert("Data reset successfully for " + teamName);
-            }
-        });
-    }
-}
-</script>
+</div>
 
 </body>
-</html> 
+</html>
+
+<div style="height:300px;"></div>

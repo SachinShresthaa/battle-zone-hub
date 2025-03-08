@@ -35,6 +35,13 @@ $message = "total_amount=$total_amount,transaction_uuid=$transaction_uuid,produc
 $s = hash_hmac('sha256', $message, '8gBm/:&EnhH.1/q', true);
 $_SESSION['signature'] = base64_encode($s);
 
+// Store payment information in session
+$_SESSION['payment_details'] = [
+    'amount' => $total_amount,
+    'transaction_uuid' => $transaction_uuid,
+    'product_code' => $product_code
+];
+
 ?>
 
 <!DOCTYPE html>
@@ -60,7 +67,7 @@ $_SESSION['signature'] = base64_encode($s);
                     <input type="text" name="product_code" value="<?php echo $product_code;?>" required hidden>
                     <input type="text" name="product_service_charge" value="0" required hidden>
                     <input type="text" name="product_delivery_charge" value="0" required hidden>
-                    <input type="text" name="success_url" value="https://localhost/esewa/success.php" required hidden>
+                    <input type="text" name="success_ur     l" value="https://localhost/battlezone/Esewa/success.php" required hidden>
                     <input type="text" name="failure_url" value="https://localhost/Project/SourceCode/failure.php" required hidden>
                     <input type="text" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required hidden>
                     <input type="text" name="signature" value="<?php echo base64_encode($s); ?>" required hidden>
@@ -79,7 +86,7 @@ $_SESSION['signature'] = base64_encode($s);
                     <input type="hidden" name="product_code" value="<?php echo $product_code; ?>" />
                     <input type="hidden" name="transaction_uuid" value="<?php echo $transaction_uuid; ?>" />
                     <input type="hidden" name="user_email" value="<?php echo $user_email; ?>" />
-                    <input type="hidden" name="success_url" value="http://localhost/esewa/success.php" />
+                    <input type="hidden" name="success_url" value="https://localhost/esewa/success.php" />
                     <input type="hidden" name="failure_url" value="https://localhost/Project/SourceCode/failure.php" />
                     <input type="hidden" name="signature" value="<?php echo base64_encode($s); ?>" />
                     <!-- Khalti test image -->
@@ -92,3 +99,4 @@ $_SESSION['signature'] = base64_encode($s);
     </div>
 </body>
 </html>
+  

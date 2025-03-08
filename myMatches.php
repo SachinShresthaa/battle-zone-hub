@@ -8,23 +8,37 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$category = isset($_GET['category']) ? $_GET['category'] : 'pubg';
+$category = 'freefire';  // Hardcoded to 'freefire'
 
-if ($category == 'pubg') {
-    $query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail
-              FROM pubg_team_registration r
-              INNER JOIN tournaments t ON r.tournament_id = t.id
-              WHERE r.user_id = ?
-              ORDER BY t.date DESC
-              LIMIT 1";
-} else {
-    $query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail
-              FROM ff_team_registration r
-              INNER JOIN tournaments t ON r.tournament_id = t.id
-              WHERE r.user_id = ?
-              ORDER BY t.date DESC
-              LIMIT 1";
+// Handle match cancellation
+// Handle match cancellation
+if (isset($_GET['cancel_match']) && isset($_GET['tournament_id'])) {
+    $tournament_id = $_GET['tournament_id'];
+
+    $delete_query = "DELETE FROM ff_team_registration WHERE user_id = ? AND tournament_id = ?";
+
+    $delete_stmt = $conn->prepare($delete_query);
+    $delete_stmt->bind_param("ii", $user_id, $tournament_id);
+    
+    if ($delete_stmt->execute()) {
+        $_SESSION['message'] = "Match registration canceled successfully.";
+        header("Location: myMatches.php" . $_SERVER['REQUEST_URI']); // Redirect to the same page
+        exit();
+    } else {
+        $_SESSION['error'] = "Error canceling match registration. Please try again.";
+        header("Location: myMatches.php" . $_SERVER['REQUEST_URI']); // Redirect to the same page
+        exit();
+    }
 }
+
+
+// Fetch the latest registered tournament for the user (for Free Fire)
+$query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail, t.id AS tournament_id
+          FROM ff_team_registration r
+          INNER JOIN tournaments t ON r.tournament_id = t.id
+          WHERE r.user_id = ?
+          ORDER BY t.date DESC
+          LIMIT 1";
 
 $stmt = $conn->prepare($query);
 $stmt->bind_param("i", $user_id);
@@ -50,6 +64,7 @@ $result = $stmt->get_result();
         body {
             background-color: black;
         }
+
         h2 {
             font-size: 36px;
             margin-bottom: 30px;
@@ -57,7 +72,6 @@ $result = $stmt->get_result();
             padding-left: 75px;
         }
 
-        /* Tournament Section */
         .container {
             padding-left: 500px;
             flex-wrap: wrap;
@@ -65,7 +79,6 @@ $result = $stmt->get_result();
             gap: 20px;
         }
 
-        /* Tournament Card */
         .card {
             display: flex;
             align-items: flex-start;
@@ -77,7 +90,6 @@ $result = $stmt->get_result();
             max-width: 700px;
         }
 
-        /* Left Side Image */
         .leftSide {
             width: 350px;
             height: 220px;
@@ -96,7 +108,6 @@ $result = $stmt->get_result();
             object-fit: cover;
         }
 
-        /* Right Side Content */
         .rightSide {
             padding: 20px;
             flex: 1;
@@ -115,7 +126,6 @@ $result = $stmt->get_result();
             margin-bottom: 8px;
         }
 
-        /* Button Styles */
         .btn {
             margin-top: 15px;
         }
@@ -137,11 +147,27 @@ $result = $stmt->get_result();
         .btn:hover {
             background-color: #aa0303;
         }
+
+        .cancel-btn {
+            background: #d9534f;
+        }
+
+        .cancel-btn:hover {
+            background-color: #c9302c;
+        }
     </style>
+    <script>
+        // Confirmation popup before match cancellation
+        function confirmCancel(tournamentId) {
+            if (confirm("Are you sure you want to cancel this match?")) {
+                window.location.href = "myMatches.php?category=<?php echo $category; ?>&cancel_match=true&tournament_id=" + tournamentId;
+            }
+        }
+    </script>
 </head>
 <body>
     <div class="container">
-        <h2>My Registered Tournament for <?php echo ucfirst($category); ?></h2>
+        <h2>My Registered Tournament for Free Fire</h2>
         
         <?php if ($row = $result->fetch_assoc()): ?>
             <div class="card">
@@ -164,18 +190,14 @@ $result = $stmt->get_result();
                     </div>
                     
                     <div class="button-group">
-                        <a href="viewDetails.php" class="btn btn-details">View Details</a>
-                        <?php if ($category == 'freefire'): ?>
-                            <a href="userviewRoomCard.php" class="btn btn-room">Get Room</a>
-                        <?php else: ?>
-                            <a href="pubggetRoom.php" class="btn btn-room">Get Room</a>
-                        <?php endif; ?>
+                        <a href="userviewRoomCard.php" class="btn btn-room">Get Room</a>
+                        <a href="javascript:void(0);" class="btn cancel-btn" onclick="confirmCancel(<?php echo $row['tournament_id']; ?>)">Cancel Match</a>
                     </div>
                 </div>
             </div>
         <?php else: ?>
             <div class="no-matches">
-                No registered tournaments found for <?php echo ucfirst($category); ?>.
+                No registered tournaments found for Free Fire.
             </div>
         <?php endif; ?>
     </div>
