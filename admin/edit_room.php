@@ -36,7 +36,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     if ($conn->query($update_sql) === TRUE) {
         $message = "Room details updated successfully!";
         // Redirect to the room details page or display updated values
-        header("Location: room_details.php");
+        header("Location: ./index.php/room_cards.php");
         exit();
     } else {
         $message = "Error: " . $conn->error;
@@ -58,8 +58,10 @@ while ($row = $tournaments_result->fetch_assoc()) {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Edit Room Details</title>
     <style>
-        /* Same style as previous page */
-        .room-card {
+        body{
+            background-color:black;
+        }
+       .room-card {
             padding: 30px;
             width: 1000px;
             text-align: center;
@@ -69,6 +71,7 @@ while ($row = $tournaments_result->fetch_assoc()) {
         h2 {
             font-size: 26px;
             margin-bottom: 20px;
+            color:white;
         }
 
         .form-group {
@@ -133,6 +136,7 @@ while ($row = $tournaments_result->fetch_assoc()) {
             background-color: #4CAF50;
             color: white;
         }
+
     </style>
 </head>
 <body>

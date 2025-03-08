@@ -17,37 +17,37 @@ session_start();
     <div class="nav-body">
         <nav class="nav-main">
                 <div class="side-bar">
-                    <a href="./adminPanel.php?dashboard">
+                    <a href="./index.php?dashboard">
                         <div class="nav-option">
                             <img src="./ASSETS/dashboard.png" alt="dashboard" class="option-icon">
                             <h3>Dashboard</h3>
                         </div>
                     </a>
-                    <a href="./adminPanel.php?users">
+                    <a href="./index.php?users">
                         <div class="nav-option">
                             <img src="./ASSETS/users.png" alt="users" class="option-icon">
                             <h3>Users</h3>
                         </div>
                     </a>
-                    <a href="./adminPanel.php?tournaments">
+                    <a href="./index.php?tournaments">
                         <div class="nav-option">
                             <img src="./ASSETS/TOURNAMENT.png" alt="tournament" class="option-icon">
                             <h3>Tournaments</h3>
                         </div>
                     </a>
-                    <a href="./adminPanel.php?room-cards">
+                    <a href="./index.php?room-cards">
                         <div class="nav-option">
                             <img src="./ASSETS/card.png" alt="room-cards" class="option-icon">
                             <h3>Room Cards</h3>
                         </div>
                     </a>
-                    <a href="./adminPanel.php?leaderboard">
+                    <a href="./index.php?leaderboard">
                         <div class="nav-option">
                             <img src="./ASSETS/Ranking.png" alt="ranking" class="option-icon">
                             <h3>Leaderboard</h3>
                         </div>
                     </a>
-                    <a href="./adminPanel.php?sharelive">
+                    <a href="./index.php?sharelive">
                         <div class="nav-option">
                             <img src="./ASSETS/sharelive.png" alt="live" class="option-icon">
                             <h3>Share Live</h3>

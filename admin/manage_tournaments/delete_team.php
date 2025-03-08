@@ -1,39 +1,37 @@
 <?php
-include_once '../connection.php'; // Ensure correct database connection
+include_once '../../connection.php'; // Database connection
+session_start(); // Start session
 
-header('Content-Type: application/json'); // Ensure JSON response format
+// Check if the form was submitted
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Retrieve the team name and user email from the form submission
+    $team_name = isset($_POST['team_name']) ? trim($_POST['team_name']) : null;
+    $user_email = isset($_POST['user_email']) ? trim($_POST['user_email']) : null;
 
-if (isset($_GET['team_name']) && isset($_GET['user_email'])) {
-    include_once '../connection.php'; // Include database connection
-
-    $team_name = trim($_GET['team_name']);
-    $user_email = trim($_GET['user_email']);
-
-    // Enable MySQLi error reporting
-    mysqli_report(MYSQLI_REPORT_ERROR | MYSQLI_REPORT_STRICT);
-
-    try {
-        // Prepare delete query
-        $stmt = $conn->prepare("DELETE FROM pubg_team_registration WHERE team_name = ? AND email = ?");
-        
-        if (!$stmt) {
-            echo json_encode(["success" => false, "message" => "SQL Prepare Error: " . $conn->error]);
-            exit;
-        }
-
-        $stmt->bind_param("ss", $team_name, $user_email);
-
-        if ($stmt->execute()) {
-            echo json_encode(["success" => true, "message" => "Team '$team_name' deleted successfully"]);
-        } else {
-            echo json_encode(["success" => false, "message" => "Failed to delete team: " . $stmt->error]);
-        }
-
-        $stmt->close();
-    } catch (Exception $e) {
-        echo json_encode(["success" => false, "message" => "Exception: " . $e->getMessage()]);
+    // Validate that both values are provided
+    if (empty($team_name) || empty($user_email)) {
+        echo "<script>alert('Invalid request. Please try again.'); window.location.href='view_teams.php';</script>";
+        exit;
     }
+
+    // Delete the entire team record from the database
+    $stmt = $conn->prepare("DELETE FROM ff_team_registration WHERE team_name = ? AND user_email = ?");
+    $stmt->bind_param("ss", $team_name, $user_email);
+    $stmt->execute();
+
+    // Check if deletion was successful
+    if ($stmt->affected_rows > 0) {
+        echo "<script>alert('Team \"$team_name\" deleted successfully!'); window.location.href='index.php';</script>";
+    } else {
+        echo "<script>alert('Error: Team not found or already deleted.'); window.location.href='index.php';</script>";
+    }
+
+    $stmt->close();
 } else {
-    echo json_encode(["success" => false, "message" => "Invalid request parameters"]);
+    // Redirect if accessed directly
+    echo "<script>alert('Invalid access!'); window.location.href='index.php';</script>";
 }
+
+// Close the database connection
+$conn->close();
 ?>

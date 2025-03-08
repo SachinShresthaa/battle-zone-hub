@@ -5,11 +5,6 @@ if(session_status() != PHP_SESSION_ACTIVE){
 }
 
     include 'connection.php';
-    $isAdminPage = false;
-    $uri = $_SERVER['REQUEST_URI'];
-    if (strpos($uri, '/admin') === 0) {
-      $isAdminPage = true;
-    }
 $isAdminUser = false;
 if (isset($_SESSION['user_id'])) {  
     $user_id = $_SESSION['user_id'];
@@ -20,10 +15,7 @@ if (isset($_SESSION['user_id'])) {
         if($user['isadmin'] == 1){
             $isAdminUser = true;
         }else {
-            if(!$isAdminPage){
-                header("Location:../unauthorized.html");
-                echo "Unauthorized";    
-            }
+            
         }
     }
 }
@@ -235,8 +227,8 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_POST['delete_account'])) {
                 </div>
                 <div class="edit-option">
                     <?php if($isAdminUser == true){ ?>
-                    <div class="admin-panel">
-                        <a href="./admin"><h4>Admin Panel<h4></a>
+                    <div class="dropdown-item">
+                        <a href="./admin"><span>Admin Panel<span>
                     </div>  
                     <?php } ?>
 

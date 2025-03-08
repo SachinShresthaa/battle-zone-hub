@@ -67,7 +67,7 @@ $_SESSION['payment_details'] = [
                     <input type="text" name="product_code" value="<?php echo $product_code;?>" required hidden>
                     <input type="text" name="product_service_charge" value="0" required hidden>
                     <input type="text" name="product_delivery_charge" value="0" required hidden>
-                    <input type="text" name="success_ur     l" value="https://localhost/battlezone/Esewa/success.php" required hidden>
+                    <input type="text" name="success_ur     l" value="https://localhost/battle-zone-hub/Esewa/success.php" required hidden>
                     <input type="text" name="failure_url" value="https://localhost/Project/SourceCode/failure.php" required hidden>
                     <input type="text" name="signed_field_names" value="total_amount,transaction_uuid,product_code" required hidden>
                     <input type="text" name="signature" value="<?php echo base64_encode($s); ?>" required hidden>

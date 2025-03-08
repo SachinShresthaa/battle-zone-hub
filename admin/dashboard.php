@@ -28,10 +28,10 @@
         </div>
             <h2>Quick Access</h2>
             <ul>
-                <li><a href="./adminPanel.php?tournaments">Add Tournaments</a></li>
-                <li><a href="./adminPanel.php?room-cards">Provide Room Cards</a></li>
-                <li><a href="./adminPanel.php?sharelive">Add Live Streams</a></li>
-                <li><a href="./adminPanel.php?leaderboard">Update Leaderboard</a></li>
+                <li><a href="./index.php?tournaments">Add Tournaments</a></li>
+                <li><a href="./index.php?room-cards">Provide Room Cards</a></li>
+                <li><a href="./index.php?sharelive">Add Live Streams</a></li>
+                <li><a href="./index.php?leaderboard">Update Leaderboard</a></li>
             </ul>
         <div class="status">
             <div class="status-item">

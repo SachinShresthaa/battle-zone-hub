@@ -71,7 +71,7 @@
     <!-- Sub-Content 1: Free Fire Teams -->
     <div id="freeFireContent" class="sub-content active">
       <?php
-      include "manage_tournaments/manageFreeFireTeam.php"
+      include "manageFreeFireTeam.php"
       ?>
     </div>
 
