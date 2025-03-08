@@ -42,7 +42,7 @@
                     </a>
                 </div>
                 <div class="matches">
-    <a href="myMatches.php?category=pubg">
+    <a href="myMatchesPubg.php?category=pubg">
         <img src="./ASSETS/MATCHES.png" alt="MATCHES">
         <h1>My Matches</h1>
     </a>

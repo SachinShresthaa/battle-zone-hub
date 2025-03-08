@@ -14,13 +14,13 @@ if (!isset($_SESSION['user_id'])) {
 }
 
 $user_id = $_SESSION['user_id'];
-$category = 'freefire';  // Hardcoded to 'freefire'
+$category = 'pubg';  // Hardcoded to 'freefire'
 
 // Handle match cancellation
 if (isset($_GET['cancel_match']) && isset($_GET['tournament_id'])) {
     $tournament_id = $_GET['tournament_id'];
 
-    $delete_query = "DELETE FROM ff_team_registration WHERE user_id = ? AND tournament_id = ?";
+    $delete_query = "DELETE FROM pubg_team_registration WHERE user_id = ? AND tournament_id = ?";
     $delete_stmt = $conn->prepare($delete_query);
     $delete_stmt->bind_param("ii", $user_id, $tournament_id);
 
@@ -31,7 +31,7 @@ if (isset($_GET['cancel_match']) && isset($_GET['tournament_id'])) {
     }
 
     // Redirect back to the same page
-    header("Location: myMatches.php?category=freefire");
+    header("Location: myMatchesPubg.php?category=pubg");
     exit();
 }
 
@@ -40,7 +40,7 @@ include "headerwithprofile.php";
 
 // Fetch the latest registered tournament for the user (for Free Fire)
 $query = "SELECT t.name AS tournament_name, t.date, t.time, t.thumbnail, t.id AS tournament_id
-          FROM ff_team_registration r
+          FROM pubg_team_registration r
           INNER JOIN tournaments t ON r.tournament_id = t.id
           WHERE r.user_id = ?
           ORDER BY t.date DESC
@@ -70,7 +70,8 @@ $result = $stmt->get_result();
         .tournament-name { font-size: 30px; font-weight: bold; color: red; margin-bottom: 10px; }
         .info-group { font-size: 20px; margin-bottom: 8px; }
         .btn { margin-top: 15px; display: inline-block; padding: 10px 18px; font-size: 20px; color: white; background: #ff0000; border: none; border-radius: 4px; text-decoration: none; cursor: pointer; margin-right: 10px; transition: background-color 0.3s ease; }
-        .btn:hover { background-color: #aa0303; } .cancel-btn { background: #ff0000; }
+        .btn:hover { background-color: #aa0303; }
+        .cancel-btn { background: #ff0000; }
         .cancel-btn:hover { background-color: #aa0303; }
         .no-matches{
             font-size:20px;
@@ -80,14 +81,14 @@ $result = $stmt->get_result();
         // Confirmation popup before match cancellation
         function confirmCancel(tournamentId) {
             if (confirm("Are you sure you want to cancel this match?")) {
-                window.location.href = "myMatches.php?category=freefire&cancel_match=true&tournament_id=" + tournamentId;
+                window.location.href = "myMatchesPubg.php?category=pubg&cancel_match=true&tournament_id=" + tournamentId;
             }
         }
     </script>
 </head>
 <body>
     <div class="container">
-        <h2>My Registered Tournament for Free Fire</h2>
+        <h2>My Registered Tournament for PUBG</h2>
         
         <?php if ($row = $result->fetch_assoc()): ?>
             <div class="card">
@@ -117,7 +118,7 @@ $result = $stmt->get_result();
             </div>
         <?php else: ?>
             <div class="no-matches">
-                No registered tournaments found for Free Fire.
+                No registered tournaments found for PUBG.
             </div>
         <?php endif; ?>
     </div>
