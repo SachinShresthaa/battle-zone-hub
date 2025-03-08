@@ -9,8 +9,8 @@ if (!isset($conn)) {
 
 // Insert team registration data if available
 if (isset($_SESSION['registration_data'])) {
-    $query = "INSERT INTO ff_team_registration 
-        (team_name, tournament_id, member1_name, member1_uid, member2_name, member2_uid, member3_name, member3_uid, member4_name, member4_uid, user_id, user_email, created_at) 
+    $query = "INSERT INTO pubg_team_registration 
+        (team_name, tournament_id, member1_name, member1_uid, member2_name, member2_uid, member3_name, member3_uid, member4_name, member4_uid, user_id, email, created_at) 
         VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, NOW())";
 
     $stmt = $conn->prepare($query);
@@ -61,14 +61,13 @@ unset($_SESSION['registration_data']);
                     <p class="card-text">
                         <?php
                         if (isset($_SESSION['registration_msg'])) {
-                            echo $_SESSION['registration_msg'];
                             unset($_SESSION['registration_msg']); // Unset the message after displaying
                         }
                         ?>
                     </p>
                 </div>
                 <div class="card-footer">
-                    <a href="../FreeFire.php" class="btn btn-primary">Back</a>
+                    <a href="../Pubg.php" class="btn btn-primary">Back</a>
                 </div>
             </div>
         </div>

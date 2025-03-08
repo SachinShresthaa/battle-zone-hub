@@ -64,7 +64,7 @@ if (isset($_POST['submit'])) {
     }
 
     $postFields = array(
-        "return_url" => "http://localhost/battle-zone-hub/khalti/payment-response.php",
+        "return_url" => "http://localhost/battle-zone-hub/khalti2/payment-response.php",
         "website_url" => "http://localhost/khalti-payment/",
         "amount" => $amount,
         "purchase_order_id" => $purchase_order_id,

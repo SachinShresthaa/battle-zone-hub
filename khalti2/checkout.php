@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Assuming you have already retrieved the entry fee from the database, for example:
 $entryFee = isset($_GET['entry_fee']) ? floatval($_GET['entry_fee']) : 0;
 
 // Get tournament and team details from session

@@ -1,5 +1,6 @@
 <?php
 include "connection.php";
+include "Header.php";
 
 // Ensure user is logged in (you might want to check session or authentication here)
 session_start();

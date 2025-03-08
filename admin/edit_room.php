@@ -1,5 +1,6 @@
 <?php
 include "../connection.php";
+include "../Header.php";
 
 // Get the room ID from the URL
 if (!isset($_GET['id'])) {
@@ -86,7 +87,7 @@ while ($row = $tournaments_result->fetch_assoc()) {
         }
 
         input, select, textarea {
-            width: 100%;
+            width: 80%;
             padding: 15px;
             background-color: #2E2E2E;
             border: 1px solid #444444;
