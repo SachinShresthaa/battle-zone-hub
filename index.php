@@ -1,7 +1,7 @@
 <?php
-$host = 'sqlserver'; // MySQL service name in docker-compose
+$host = 'localhost'; // MySQL service name in docker-compose
 $user = 'root';
-$password = 'rootpassword';
+$password = '';
 $dbname = 'battlezone';
 
 $conn = new mysqli($host, $user, $password, $dbname);

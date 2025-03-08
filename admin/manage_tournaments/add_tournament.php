@@ -174,7 +174,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                             <td>{$row['prize_2nd']}</td>
                             <td><img src='{$row['thumbnail']}' width='50'></td>
                             <td>
-                                <a href='edit.php?edit={$row['id']}' class='btn'>Edit</a>
+                                <a href='./manage_tournaments/edit.php?edit={$row['id']}' class='btn'>Edit</a>
                                 <form action='' method='POST' style='display:inline;'>
                                     <input type='hidden' name='action' value='delete'>
                                     <input type='hidden' name='tournament_id' value='{$row['id']}'>
