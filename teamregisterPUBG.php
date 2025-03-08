@@ -1,26 +1,21 @@
 <?php
 include "headerWithProfile.php";
-include_once 'connection.php'; // Database connection
+include_once 'connection.php';
 
 $successMessage = ''; // Variable to store success message
 $errorMessage   = ''; // Variable to store error message
 $tournament_id  = isset($_GET['tournament_id']) ? intval($_GET['tournament_id']) : 0;
 $tournament_date = "";
+$entryFee = ""; // Default value in case no value is fetched
 
 // Fetch tournament details based on the ID (fetching date and entry fee)
 if ($tournament_id > 0) {
-    $stmt = $conn->prepare("SELECT name, date, price FROM tournaments WHERE id = ?");
+    $stmt = $conn->prepare("SELECT date, price FROM tournaments WHERE id = ?");
     $stmt->bind_param("i", $tournament_id);
     $stmt->execute();
-    $stmt->bind_result($tournament_name, $tournament_date, $entryFee);
+    $stmt->bind_result($tournament_date, $entryFee);
     $stmt->fetch();
     $stmt->close();
-
-    // Store tournament details in session
-    $_SESSION['tournament_id'] = $tournament_id;
-    $_SESSION['tournament_name'] = $tournament_name;  // Store tournament name in session
-    $_SESSION['tournament_date'] = $tournament_date;
-    $_SESSION['entry_fee'] = $entryFee;
 }
 
 // Ensure user is logged in before registering
@@ -30,6 +25,7 @@ if (!isset($_SESSION['user_id'])) {
     // Set user_email to prevent undefined key warning
     $user_email = $_SESSION['user_email'] ?? '';
 }
+
 
 if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
     // Get the form data
@@ -48,14 +44,14 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
     $user_email = $_SESSION['user_email']; // Make sure this is set during login
 
     // Check if the user is already registered for the same tournament
-    $stmt = $conn->prepare("SELECT COUNT(*) FROM pubg_team_registration WHERE user_id = ? AND tournament_id = ? AND payment_status = 'completed'");
+    $stmt = $conn->prepare("SELECT COUNT(*) FROM pubg_team_registration WHERE user_id = ? AND tournament_id = ?");
     $stmt->bind_param("ii", $user_id, $tournament_id);
     $stmt->execute();
     $stmt->bind_result($existingRegistrationCount);
     $stmt->fetch();
     $stmt->close();
 
-    // If the user is already registered and the payment is completed, show an error message
+    // If the user is already registered, show an error message
     if ($existingRegistrationCount > 0) {
         $errorMessage = "You have already registered for this tournament.";
     } else {
@@ -64,8 +60,8 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
             // Prepare the SQL query for inserting the registration
             $stmt = $conn->prepare(
                 "INSERT INTO pubg_team_registration 
-                (team_name, tournament_id, member1_name, member1_uid, member2_name, member2_uid, member3_name, member3_uid, member4_name, member4_uid, user_id, email, payment_status) 
-                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'pending')"
+                (team_name, tournament_id, member1_name, member1_uid, member2_name, member2_uid, member3_name, member3_uid, member4_name, member4_uid, user_id, email) 
+                VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)"
             );
 
             // Bind the parameters
@@ -87,11 +83,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
 
             // Execute the query
             if ($stmt->execute()) {
-                // Store the team name and tournament name in session after successful registration
-                $_SESSION['team_name'] = $teamName;
-                $_SESSION['tournament_name'] = $tournament_name;
-
-                $successMessage = "Team registered successfully! Proceed to payment.";
+                $successMessage = "Team registered successfully!";
             } else {
                 $errorMessage = "Error: " . $stmt->error;
             }
@@ -107,17 +99,17 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Team Registration PUBG</title>
+    <title>Team Registration Free Fire</title>
     <link rel="stylesheet" href="./CSS/teamregister.css">
 </head>
 <body>
     <div class="main">
         <div class="left-side">
-            <img src="./ASSETS/PUBGregister.png" alt="PUBG Registration" style="margin-top: 0px;">
+            <img src="./ASSETS/PUBGregister.png" alt="Free Fire Registration" style="margin-top: 0px;">
         </div>
         <div class="right-side">
             <h1>Team Registration Form</h1>
-            <form action="teamregisterpubg.php?tournament_id=<?php echo htmlspecialchars($tournament_id); ?>" method="POST">
+            <form action="teamregisterPUBG.php?tournament_id=<?php echo htmlspecialchars($tournament_id); ?>" method="POST">
                 <label for="team-name">Team Name</label>
                 <input type="text" id="team-name" name="teamName" placeholder="Enter your team name" required>
 
@@ -157,8 +149,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST" && empty($errorMessage)) {
     <!-- Success Message Popup and Redirect to Khalti Checkout -->
     <?php if (!empty($successMessage)) { ?>
         <script type="text/javascript">
-            alert("<?php echo $successMessage; ?>");
-            window.location.href = "khalti/checkout.php?tournament_id=<?php echo $tournament_id; ?>&entry_fee=<?php echo urlencode($entryFee); ?>&team_name=<?php echo urlencode($teamName); ?>&tournament_name=<?php echo urlencode($tournament_name); ?>";
+            window.location.href = "khalti/checkout.php?tournament_id=<?php echo $tournament_id; ?>&entry_fee=<?php echo urlencode($entryFee); ?>";
         </script>
     <?php } ?>
 
